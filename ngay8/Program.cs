@@ -1,5 +1,9 @@
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Service.Application.ProductFeatures.Commands;
 using Service.Domain.Models;
+using System.Reflection;
 
 namespace ngay8
 {
@@ -12,11 +16,11 @@ namespace ngay8
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            builder.Services.AddAutoMapper(typeof(Program));
+
             builder.Services.AddDbContext<AestrainingContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaulConnectionString")));
 
             builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
-            builder.Services.AddAutoMapper(typeof(Program));
-
 
             var app = builder.Build();
 

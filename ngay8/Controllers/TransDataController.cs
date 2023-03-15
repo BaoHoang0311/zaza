@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Service.Application.ProductFeatures.Commands;
 using Service.Application.TransDataFeature.Queries;
 
 namespace ngay8.Controllers
@@ -8,8 +9,8 @@ namespace ngay8.Controllers
     public class TransDataController : Controller
     {
         private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
-        private IMediator _mediator;
         public TransDataController(IMapper mapper, IMediator mediator)
         {
             _mapper = mapper;
@@ -20,8 +21,9 @@ namespace ngay8.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Search(SearchDetail search )
+        public async Task<IActionResult> Search(SearchDetail search )
         {
+            var z = await _mediator.Send(new GetProductByIdQuery() { Id=5});
             Console.WriteLine("haha");
             return View();
         }
