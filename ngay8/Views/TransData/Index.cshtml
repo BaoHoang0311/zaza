@@ -1,39 +1,79 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model Service.Application.TransDataFeature.Queries.SearchDetail
 @{
+    //int i = 0;
 }
-<form class="row g-3">
+<form class="row g-3" method="Post" asp-action="Search">
 
     <div class="col-md-4">Search Criteria</div>
     <div class="col-md-4">
-        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
+        <input class="form-check-input" type="radio" name="flexRadioDefault" asp-for="GCE" value ="1" checked="true">
         <label class="form-check-label" for="flexRadioDefault1">GCE</label>
     </div>
 
     <div class="col-md-4">
-        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" asp-for="GCR" value="2">
         <label class="form-check-label" for="flexRadioDefault2">GCR</label>
     </div>
 
     <div class="col-md-6">
         <label for="inputEmail4" class="form-label">Agent CEA NO</label>
-        <input type="email" class="form-control" id="inputEmail4">
+        <input class="form-control" asp-for="AgentCEANO">
     </div>
     <div class="col-md-6">
         <label for="inputPassword4" class="form-label">Agent NAME</label>
-        <input type="password" class="form-control" id="inputPassword4">
+        <input type="password" class="form-control" asp-for="AgnetName">
     </div>
     <div class="col-md-12">
         <label for="inputEmail4" class="form-label">Submission Date/Received</label>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-6 mt-0">
         <label for="inputEmail4" class="form-label">From</label>
-        <input type="date" class="form-control" id="inputPassword4">
+        <input type="date" class="form-control" asp-for="From" >
     </div>
-    <div class="col-md-6">
+    <div class="col-md-6 mt-0">
         <label for="inputEmail4" class="form-label">To</label>
-        <input type="date" class="form-control" id="inputPassword4">
+        <input type="date" class="form-control" asp-for="To">
     </div>
     <button type="submit" class="btn btn-primary">Search</button>
 </form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>STT</th>
+            <th rowspan="1">
+                AgentName/CEANO
+            </th>
+            <th scope="col">Project Name</th>
+            <th scope="col">Transacted Price/Trasaction Column</th>
+            <th scope="col">Gross Value / Net Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th scope="1">1</th>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>eweqwe</td>
+            <td>eweqwe</td>
+        </tr>
+        <tr>
+            <th scope="row">2</th>
+            <td>Jacob</td>
+            <td>Thornton</td>
+            <td>eweqwe</td>
+            <td>eweqwe</td>
+        </tr>
+        <tr>
+            <th scope="row">3</th>
+            <td colspan="2">Larry the Bird</td>
+            <td>eweqwe</td>
+            <td>eweqwe</td>
+        </tr>
+    </tbody>
+</table>
+
+
+@section Scripts{
+    <script></script>
+}

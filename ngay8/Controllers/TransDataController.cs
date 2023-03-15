@@ -22,6 +22,7 @@ namespace ngay8.Controllers
         [HttpPost]
         public IActionResult Search(SearchDetail search )
         {
+            Console.WriteLine("haha");
             return View();
         }
     }

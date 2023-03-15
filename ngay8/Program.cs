@@ -37,7 +37,7 @@ namespace ngay8
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=TransData}/{action=Index}/{id?}");
 
             app.Run();
         }
