@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Service.Domain.Models;
 
 public partial class TransactionGcedata
 {
     public long Id { get; set; }
-
-    public int TransId { get; set; }
-
     public DateTime KeyinDate { get; set; }
 
     public DateTime SubDate { get; set; }
@@ -32,4 +30,7 @@ public partial class TransactionGcedata
     public double NetValue { get; set; }
 
     public double StatisticsRatio { get; set; }
+
+    public int TransId { get; set; }
+    public TransactionGcedata transactionGcedata { get; set; }
 }

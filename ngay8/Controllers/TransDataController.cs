@@ -23,8 +23,7 @@ namespace ngay8.Controllers
         [HttpPost]
         public async Task<IActionResult> Search(SearchDetail search )
         {
-            var z = await _mediator.Send(new GetProductByIdQuery() { Id=5});
-            Console.WriteLine("haha");
+            var z = await _mediator.Send(new GetAllProductsQuery());
             return View();
         }
     }

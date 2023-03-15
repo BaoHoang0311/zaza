@@ -7,8 +7,6 @@ public partial class TransactionGcrdata
 {
     public long Id { get; set; }
 
-    public int TransId { get; set; }
-
     public string? TransSource { get; set; }
 
     public DateTime RcvDate { get; set; }
@@ -28,4 +26,7 @@ public partial class TransactionGcrdata
     public double GrossValue { get; set; }
 
     public double NetValue { get; set; }
+    public int TransId { get; set; }
+    public TransactionGcrdata transactionGcrdata { get; set; }
+
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Service.Application.DTOs;
 using Service.Application.ProductFeatures.Commands;
 using Service.Domain.Models;
@@ -11,29 +12,27 @@ using System.Threading.Tasks;
 
 namespace Service.Application.TransDataFeature.Queries
 {
-    public record SearchDetail : IRequest
+    //IRequest<List<DataCustom>>
+    public class SearchDetail : IRequest
     {
-        public bool GCE { get; set; }
-        public bool GCR { get; set; }
+        public int op { get; set; }
         public string? AgentCEANO { get; set; }
         public string? AgnetName { get; set; }
-        public DateTime SubmissionDate { get; set; }
-        public DateTime Received { get; set; }
+        public DateTime? From { get; set; }
+        public DateTime? To { get; set; }
     }
 
-    public class GetDataWithSearch
+    public class GetDataWithSearch : IRequestHandler<SearchDetail>
     {
         private readonly AestrainingContext _context;
-        private readonly IMapper _mapper;
-
-        public GetDataWithSearch(AestrainingContext context, IMapper mapper)
+        public GetDataWithSearch(AestrainingContext context)
         {
             _context = context;
-            _mapper = mapper;
         }
-        public async Task<List<DataCustom>> Handle(SearchDetail keySearch, CancellationToken cancellationToken)
+        public async Task Handle(SearchDetail keySearch, CancellationToken cancellationToken)
         {
-            return null;
+            var data = await _context.TransactionDatas.FirstOrDefaultAsync(x => x.ClosingAgtBizName == keySearch.AgnetName);
+            //return null;
         }
     }
 }

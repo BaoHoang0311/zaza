@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Service.Domain.Models;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Service.Domain.Models;
 

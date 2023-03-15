@@ -5,6 +5,11 @@ namespace Service.Domain.Models;
 
 public partial class TransactionData
 {
+    public TransactionData()
+    {
+        TransactionGcedata = new HashSet<TransactionGcedata>();
+        TransactionGcrdatas = new HashSet<TransactionGcrdata>();
+    }
     public int TransId { get; set; }
 
     public int TransTypeId { get; set; }
@@ -48,4 +53,7 @@ public partial class TransactionData
     public DateTime GeneratedDate { get; set; }
 
     public string? LastUpdater { get; set; }
+
+    public ICollection<TransactionGcedata> TransactionGcedata { get; set; }
+    public ICollection<TransactionGcrdata> TransactionGcrdatas { get; set; }
 }
