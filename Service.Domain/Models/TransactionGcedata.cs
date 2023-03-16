@@ -32,5 +32,5 @@ public partial class TransactionGcedata
     public double StatisticsRatio { get; set; }
 
     public int TransId { get; set; }
-    public TransactionGcedata transactionGcedata { get; set; }
+    public virtual TransactionData TransactionData { get; set; }
 }

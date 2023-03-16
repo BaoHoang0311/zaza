@@ -116,6 +116,13 @@ public partial class AestrainingContext : DbContext
                 .HasColumnName("TypeID");
         });
 
+        modelBuilder.Entity<TransactionGcedata>().HasOne(gceData => gceData.TransactionData)
+                                        .WithMany(m => m.TransactionGcedata)
+                                        .HasForeignKey(am => am.TransId);
+
+        modelBuilder.Entity<TransactionGcrdata>().HasOne(gceData => gceData.TransactionData)
+                                        .WithMany(m => m.TransactionGcrdatas)
+                                        .HasForeignKey(am => am.TransId);
         OnModelCreatingPartial(modelBuilder);
     }
 

@@ -1,0 +1,84 @@
+﻿@*@model List<InfoCus>*@
+
+
+@using Service.Domain.Models;
+@model IEnumerable<Product>
+
+
+@{
+    int i = 0;
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+
+            <th rowspan="1">
+                AgentName<br />
+                CEANO
+            </th>
+
+            <th scope="col">Project Name</th>
+
+            <th scope="col">
+                Transacted Price <br />
+                Trasaction Column
+            </th>
+
+            <th scope="col">
+                Gross Value <br />
+                Net Value
+            </th>
+
+        </tr>
+    </thead>
+
+    <tbody>
+        @*            @foreach (var item in Model)
+        {
+        <tr>
+        <th>@i++</th>
+
+        <td>@item.AgentName <br>
+        @item.CEANo
+        </td>
+
+        <td>
+        @item.ProjectNane
+        </td>
+
+        <td>@item.TransactedPrice<br>
+        @item.TransactedCol
+        </td>
+
+        <td>
+        @item.GrossVlaue?.ToString("#,##0")<br>
+        @item.NetValue?.ToString("#,##0")
+        </td>
+        </tr>
+        }*@
+
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                @{
+                    var count = ++i;
+                }
+                <th>@count</th>
+
+                <td>
+                    @item.ProductName <br>
+                </td>
+
+                <td>
+                    @item.Price
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+

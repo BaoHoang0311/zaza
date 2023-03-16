@@ -27,6 +27,6 @@ public partial class TransactionGcrdata
 
     public double NetValue { get; set; }
     public int TransId { get; set; }
-    public TransactionGcrdata transactionGcrdata { get; set; }
+    public virtual TransactionData TransactionData { get; set; }
 
 }
