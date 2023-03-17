@@ -32,6 +32,7 @@ namespace ngay8.Controllers
                     From = search.From,
                     To = search.To,
                 });
+
                 return PartialView("~/Views/TransData/_SearchResultPartialView.cshtml", z);
             }
             return View();

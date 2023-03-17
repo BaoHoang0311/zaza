@@ -66,9 +66,10 @@
         })
 
         function SaveStudent() {
-            if ($("#studentForm").valid()) {
+            if ($("#studentForm").valid()) 
+            {
                 var formData = $("#studentForm").serialize();
-                console.log(formData);
+                alert(formData);
                 $.ajax({
                     url: '/TransData/Search',
                     type: "POST",

@@ -16,7 +16,7 @@ namespace ngay8
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            builder.Services.AddAutoMapper(typeof(Program));
+            //builder.Services.AddAutoMapper(typeof(Program));
 
             builder.Services.AddDbContext<AestrainingContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaulConnectionString")));
 

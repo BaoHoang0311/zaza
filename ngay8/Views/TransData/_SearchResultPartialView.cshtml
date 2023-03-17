@@ -1,84 +1,106 @@
-﻿@*@model List<InfoCus>*@
-
-
-@using Service.Domain.Models;
-@model IEnumerable<Product>
-
+﻿
+@using Service.Application.DTOs;
+@model List<TableDTOs>
 
 @{
-    int i = 0;
+    int j = 0;
 }
 
 <table class="table">
     <thead>
         <tr>
-            <th>#</th>
-
+            <th>STT</th>
+            <th>ID</th>
+            <th>TransID</th>
             <th rowspan="1">
                 AgentName<br />
                 CEANO
             </th>
-
-            <th scope="col">Project Name</th>
-
+            <th>Project Name</th>
+            <th>SubDate / Rcv Date</th>
             <th scope="col">
                 Transacted Price <br />
                 Trasaction Column
             </th>
-
             <th scope="col">
                 Gross Value <br />
                 Net Value
             </th>
-
         </tr>
     </thead>
-
     <tbody>
-        @*            @foreach (var item in Model)
+        @for (int i = 0; i < Model.Count; i++)
         {
-        <tr>
-        <th>@i++</th>
+            @if(Model[i].Gcedata.Count > 0)
+            {
+                @for (int k = 0; k < Model[i].Gcedata.Count; k++)
+                {
+                    <tr>
+                        @{
+                            j++;
+                        }
+                        <td>@j</td>
 
-        <td>@item.AgentName <br>
-        @item.CEANo
-        </td>
+                        <td>@Model[i].Gcedata[k].Id</td>
 
-        <td>
-        @item.ProjectNane
-        </td>
+                        <td>@Model[i].Gcedata[k].TransId</td>
 
-        <td>@item.TransactedPrice<br>
-        @item.TransactedCol
-        </td>
+                        <td>
+                            @Model[i].Gcedata[k].AgtCeano <br>
+                            @Model[i].Gcedata[k].AgtBizName
+                        </td>
 
-        <td>
-        @item.GrossVlaue?.ToString("#,##0")<br>
-        @item.NetValue?.ToString("#,##0")
-        </td>
-        </tr>
-        }*@
+                        <td> @Model[i].ProjectNane </td>
 
+                        <td> @Model[i].Gcedata[k].SubDate.ToShortDateString()</td>
 
-        @foreach (var item in Model)
-        {
-            <tr>
-                @{
-                    var count = ++i;
+                        <td>
+                            @Model[i].TransactedPrice?.ToString("#,##0") <br>
+                            @Model[i].TransactedCol?.ToString("#,##0")
+                        </td>
+
+                        <td>
+                            @Model[i].Gcedata[k].GrossValue.ToString("#,##0")<br />
+                            @Model[i].Gcedata[k].NetValue.ToString("#,##0")
+                        </td>
+                    </tr>
                 }
-                <th>@count</th>
+            }
+            else
+            {
+                @for (int k = 0; k < Model[i].Gcrdata.Count; k++)
+                {
+                    <tr>
+                        @{
+                            j++;
+                        }
+                        <td>@j</td>
 
-                <td>
-                    @item.ProductName <br>
-                </td>
+                        <td>@Model[i].Gcrdata[k].Id</td>
 
-                <td>
-                    @item.Price
-                </td>
-            </tr>
+                        <td>@Model[i].Gcrdata[k].TransId</td>
+
+                        <td>
+                            @Model[i].Gcrdata[k].AgtCeano <br>
+                            @Model[i].Gcrdata[k].AgtBizName
+                        </td>
+
+                        <td> @Model[i].ProjectNane </td>
+
+                        <td> @Model[i].Gcrdata[k].RcvDate.ToShortDateString()</td>
+
+                        <td>
+                            @Model[i].TransactedPrice?.ToString("#,##0") <br>
+                            @Model[i].TransactedCol?.ToString("#,##0")
+                        </td>
+
+                        <td>
+                            @Model[i].Gcrdata[k].GrossValue.ToString("#,##0")<br />
+                            @Model[i].Gcrdata[k].NetValue.ToString("#,##0")
+                        </td>
+                    </tr>
+                }
+            }
         }
-
     </tbody>
 </table>
-
-
