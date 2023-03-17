@@ -22,7 +22,7 @@
 
     <div class="col-md-6">
         <label for="inputEmail4" class="form-label">Agent CEA NO</label>
-        <input class="form-control" asp-for="AgentCEANO">
+        <input type="form-control" class="form-control" asp-for="AgentCEANO">
         <span asp-validation-for="AgentCEANO" class="text-danger"></span>
     </div>
 
@@ -62,14 +62,48 @@
 
     <script>
         $(document).ready(function () {
-            $.validator.unobtrusive.parse($("#studentForm"));
+
+            //$.validator.unobtrusive.parse($("#studentForm"));
+
+            $("#studentForm").validate({
+                rules: {
+                    AgentCEANO: {
+                        required: true,
+                    },
+                    AgentName: {
+                        required: true,
+                    },
+                    From: {
+                        required: true,
+                    },
+                    To: {
+                        required: true,
+                    }
+                },
+                messages: {
+                    AgentCEANO: {
+                        required: "Please enter first",
+                    },
+                    AgentName: {
+                        required: "Please enter middle",
+                    },
+                    From: {
+                        required: "Please enter middle",
+                    },
+                    To: {
+                        required: "Please enter middle",
+                    }
+                }
+            });
+
+
+
+
         })
 
         function SaveStudent() {
-            if ($("#studentForm").valid()) 
-            {
+            if ($("#studentForm").valid()) {
                 var formData = $("#studentForm").serialize();
-                alert(formData);
                 $.ajax({
                     url: '/TransData/Search',
                     type: "POST",
@@ -85,39 +119,4 @@
             }
         }
     </script>
-
-
 }
-@*<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>*@
-@*    <script>
-        $(document).ready(function () {
-            $("#Search").click(function (event) {
-                var formData = {
-                    op: document.querySelector('input[name="op"]:checked').value,
-                    AgentCEANO: $("#AgentCEANO").val(),
-                    AgentName: $("#AgentName").val(),
-                    From: document.querySelector("#From").value,
-                    To: document.querySelector("#To").value,
-                };
-                //alert(op);
-                alert(formData.AgentCEANO);
-                //alert(formData.AgentName);
-                //alert(formData.From);
-                //alert(formData.To);
-
-                $.ajax({
-                    url: '/TransData/Search',
-                    type: "POST",
-                    data: formData,
-                    success: function (result) {
-                        $('#partialViewContainer').empty();
-                        $('#partialViewContainer').html(result);
-                    },
-                    error: function (response) {
-                        console.log(`error`);
-                    },
-                });
-                event.preventDefault();
-            });
-        });
-    </script>*@
