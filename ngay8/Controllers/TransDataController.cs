@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using ngay8.ViewModel;
-using Service.Application.ProductFeatures.Commands;
 using Service.Application.TransDataFeature.Queries;
 
 namespace ngay8.Controllers
@@ -22,19 +20,21 @@ namespace ngay8.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Search(SearchDetailVM search )
+        public async Task<IActionResult> Search(GetSearchRequest search)
         {
-            //var z = await _mediator.Send(new GetAllProductsQuery());
-
-            var z = await _mediator.Send(new GetSearchDetail()
+            if (ModelState.IsValid)
             {
-                op = search.op,
-                AgentName = search.AgentName,
-                AgentCEANO = search.AgentCEANO,
-                From = search.From,
-                To = search.To,
-            });
-            return PartialView("~/Views/TransData/_SearchResultPartialView.cshtml", z);
+                var z = await _mediator.Send(new GetSearchRequest()
+                {
+                    op = search.op,
+                    AgentName = search.AgentName,
+                    AgentCEANO = search.AgentCEANO,
+                    From = search.From,
+                    To = search.To,
+                });
+                return PartialView("~/Views/TransData/_SearchResultPartialView.cshtml", z);
+            }
+            return View();
         }
     }
 }

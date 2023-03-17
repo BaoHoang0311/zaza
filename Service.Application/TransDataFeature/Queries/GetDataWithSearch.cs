@@ -1,27 +1,37 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Service.Application.DTOs;
 using Service.Domain.Models;
-using System.Security.Cryptography;
+using System.ComponentModel.DataAnnotations;
 
 namespace Service.Application.TransDataFeature.Queries
 {
-    public class GetSearchDetail : IRequest<List<TransactionData>>
+    public class GetSearchRequest : IRequest<List<TransactionData>>
     {
         public int op { get; set; }
+        [Required(ErrorMessage = "Vui lòng nhập")]
+
         public string? AgentCEANO { get; set; }
+        [Required(ErrorMessage = "Vui lòng nhập")]
+
         public string? AgentName { get; set; }
+        [Required(ErrorMessage = "Vui lòng nhập")]
+
         public DateTime? From { get; set; }
+        [Required(ErrorMessage = "Vui lòng nhập")]
+
         public DateTime? To { get; set; }
     }
-    public class GetDataWithSearchDetail : IRequestHandler<GetSearchDetail, List<TransactionData>>
+    public class GetDataHandler : IRequestHandler<GetSearchRequest, List<TransactionData>>
     {
         private readonly AestrainingContext _context;
-        public GetDataWithSearchDetail(AestrainingContext context)
+        private readonly IMapper _mapper;
+        public GetDataHandler(AestrainingContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
-        public async Task<List<TransactionData>> Handle(GetSearchDetail keySearch, CancellationToken cancellationToken)
+        public async Task<List<TransactionData>> Handle(GetSearchRequest keySearch, CancellationToken cancellationToken)
         {
             var transactionDatas = _context.TransactionDatas.Where(x => x.ClosingAgtCeano == keySearch.AgentCEANO || x.ClosingAgtCeano == keySearch.AgentName).Take(10).AsQueryable();
 
@@ -32,7 +42,6 @@ namespace Service.Application.TransDataFeature.Queries
                 {
                     transactionDatas = transactionDatas.Include(m => m.TransactionGcedata.Where(x => x.SubDate  >= keySearch.From && x.SubDate <= keySearch.To)).Take(10);
 
-                    //transactionDatas = transactionDatas.
                 }
                 else if ( keySearch.From != null && keySearch.To == null ) transactionDatas = transactionDatas.Include(m => m.TransactionGcedata.Where(x => x.SubDate >= keySearch.From)).Take(10);
                 else if (keySearch.From == null || keySearch.To != null ) transactionDatas = transactionDatas.Include(m => m.TransactionGcedata.Where(x => x.SubDate <= keySearch.To)).Take(10);

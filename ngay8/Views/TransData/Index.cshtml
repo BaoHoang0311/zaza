@@ -1,10 +1,16 @@
-﻿@model Service.Application.TransDataFeature.Queries.GetSearchDetail
+﻿@model Service.Application.TransDataFeature.Queries.GetSearchRequest
 @{
     ViewData["Title"] = "Multi Search";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
 }
 
-<form class="row g-3">
+<form id="studentForm" class="row g-3">
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
     <div class="col-md-4">Search Criteria</div>
+
     <div class="col-md-4">
         <input class="form-check-input" type="radio" name="op" value="1" checked>
         <label class="form-check-label">GCE</label>
@@ -13,26 +19,35 @@
         <input class="form-check-input" type="radio" name="op" value="2">
         <label class="form-check-label">GCR</label>
     </div>
+
     <div class="col-md-6">
         <label for="inputEmail4" class="form-label">Agent CEA NO</label>
         <input class="form-control" asp-for="AgentCEANO">
+        <span asp-validation-for="AgentCEANO" class="text-danger"></span>
     </div>
+
     <div class="col-md-6">
         <label for="inputPassword4" class="form-label">Agent NAME</label>
         <input type="form-control" class="form-control" asp-for="AgentName">
+        <span asp-validation-for="AgentName" class="text-danger"></span>
     </div>
+
     <div class="col-md-12">
         <label for="inputEmail4" class="form-label">Submission Date/Received</label>
     </div>
+
     <div class="col-md-6 mt-0">
         <label for="inputEmail4" class="form-label">From</label>
         <input type="date" class="form-control" asp-for="From">
+        <span asp-validation-for="From" class="text-danger"></span>
+
     </div>
     <div class="col-md-6 mt-0">
         <label for="inputEmail4" class="form-label">To</label>
         <input type="date" class="form-control" asp-for="To">
+        <span asp-validation-for="To" class="text-danger"></span>
     </div>
-    <button type="button" class="btn btn-primary" id="Search">Search</button>
+    <button type="button" class="btn btn-primary" id="Search" onclick="SaveStudent()">Search</button>
 </form>
 
 
@@ -41,9 +56,39 @@
 
 
 @section Scripts{
-    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js" integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js" integrity="sha512-xq+Vm8jC94ynOikewaQXMEkJIOBp7iArs3IhFWSWdRT3Pq8wFz46p+ZDFAR7kHnSFf+zUv52B3prRYnbDRdgog==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script>
+        $(document).ready(function () {
+            $.validator.unobtrusive.parse($("#studentForm"));
+        })
+
+        function SaveStudent() {
+            if ($("#studentForm").valid()) {
+                var formData = $("#studentForm").serialize();
+                console.log(formData);
+                $.ajax({
+                    url: '/TransData/Search',
+                    type: "POST",
+                    data: formData,
+                    success: function (result) {
+                        $('#partialViewContainer').empty();
+                        $('#partialViewContainer').html(result);
+                    },
+                    error: function (response) {
+                        console.log(`error`);
+                    },
+                });
+            }
+        }
+    </script>
+
+
+}
+@*<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>*@
+@*    <script>
         $(document).ready(function () {
             $("#Search").click(function (event) {
                 var formData = {
@@ -53,9 +98,8 @@
                     From: document.querySelector("#From").value,
                     To: document.querySelector("#To").value,
                 };
-
                 //alert(op);
-                //alert(formData.AgentCEANO);
+                alert(formData.AgentCEANO);
                 //alert(formData.AgentName);
                 //alert(formData.From);
                 //alert(formData.To);
@@ -75,5 +119,4 @@
                 event.preventDefault();
             });
         });
-    </script>
-}
+    </script>*@

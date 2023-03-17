@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
 
-
-namespace Service.Application.Mapper
+namespace ngay8.Mapper
 {
     public class MappingProfile : Profile
     {
         public MappingProfile()
         {
-
         }
     }
 }
