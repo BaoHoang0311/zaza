@@ -1,5 +1,4 @@
-﻿
-@using Service.Application.DTOs;
+﻿@using Service.Application.DTOs;
 @model List<TableDTOs>
 
 @{
@@ -29,78 +28,33 @@
         </tr>
     </thead>
     <tbody>
-        @for (int i = 0; i < Model.Count; i++)
+        @if (Model != null)
         {
-            @if(Model[i].Gcedata.Count > 0)
+            @for (int i = 0; i < Model.Count; i++)
             {
-                @for (int k = 0; k < Model[i].Gcedata.Count; k++)
-                {
-                    <tr>
-                        @{
-                            j++;
-                        }
-                        <td>@j</td>
-
-                        <td>@Model[i].Gcedata[k].Id</td>
-
-                        <td>@Model[i].Gcedata[k].TransId</td>
-
-                        <td>
-                            @Model[i].Gcedata[k].AgtCeano <br>
-                            @Model[i].Gcedata[k].AgtBizName
-                        </td>
-
-                        <td> @Model[i].ProjectNane </td>
-
-                        <td> @Model[i].Gcedata[k].SubDate.ToShortDateString()</td>
-
-                        <td>
-                            @Model[i].TransactedPrice?.ToString("#,##0") <br>
-                            @Model[i].TransactedCol?.ToString("#,##0")
-                        </td>
-
-                        <td>
-                            @Model[i].Gcedata[k].GrossValue.ToString("#,##0")<br />
-                            @Model[i].Gcedata[k].NetValue.ToString("#,##0")
-                        </td>
-                    </tr>
-                }
-            }
-            else
-            {
-                @for (int k = 0; k < Model[i].Gcrdata.Count; k++)
-                {
-                    <tr>
-                        @{
-                            j++;
-                        }
-                        <td>@j</td>
-
-                        <td>@Model[i].Gcrdata[k].Id</td>
-
-                        <td>@Model[i].Gcrdata[k].TransId</td>
-
-                        <td>
-                            @Model[i].Gcrdata[k].AgtCeano <br>
-                            @Model[i].Gcrdata[k].AgtBizName
-                        </td>
-
-                        <td> @Model[i].ProjectNane </td>
-
-                        <td> @Model[i].Gcrdata[k].RcvDate.ToShortDateString()</td>
-
-                        <td>
-                            @Model[i].TransactedPrice?.ToString("#,##0") <br>
-                            @Model[i].TransactedCol?.ToString("#,##0")
-                        </td>
-
-                        <td>
-                            @Model[i].Gcrdata[k].GrossValue.ToString("#,##0")<br />
-                            @Model[i].Gcrdata[k].NetValue.ToString("#,##0")
-                        </td>
-                    </tr>
-                }
+                <tr>
+                    @{
+                        j++;
+                    }
+                    <td>@j</td>
+                    <td>@Model[i].Id</td>
+                    <td>@Model[i].TransID</td>
+                    <td>
+                        @Model[i].AgentName <br>
+                        @Model[i].CEANo
+                    </td>
+                    <td> @Model[i].ProjectNane </td>
+                    <td> @Model[i].Date?.ToShortDateString()</td>
+                    <td>
+                        @Model[i].TransactedPrice?.ToString("#,##0") <br>
+                        @Model[i].TransactedCol?.ToString("#,##0")
+                    </td>
+                    <td>
+                        @Model[i].GrossValue?.ToString("#,##0")<br />
+                        @Model[i].NetValue?.ToString("#,##0")
+                    </td>
+                </tr>
             }
         }
-    </tbody>
 </table>
+

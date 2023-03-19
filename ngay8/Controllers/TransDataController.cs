@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using ngay8.Models;
+using Service.Application.DTOs;
 using Service.Application.TransDataFeature.Queries;
 
 namespace ngay8.Controllers
@@ -15,27 +18,34 @@ namespace ngay8.Controllers
             _mapper = mapper;
             _mediator = mediator;
         }
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Search(GetSearchRequest search)
+        public async Task<IActionResult> Index(SearchVM search)
         {
             if (ModelState.IsValid)
             {
-                var z = await _mediator.Send(new GetSearchRequest()
+                var getSearchRequest = new GetSearchRequest()
                 {
                     op = search.op,
                     AgentName = search.AgentName,
                     AgentCEANO = search.AgentCEANO,
                     From = search.From,
                     To = search.To,
-                });
-
-                return PartialView("~/Views/TransData/_SearchResultPartialView.cshtml", z);
+                };
+                var z = await _mediator.Send(getSearchRequest);
+                return PartialView("~/Views/TransData/_SearchResultPartialView.cshtml",z);
             }
-            return View();
+            //return BadRequest("LỖI"); 
+            return View("Index");
+        }
+        public async Task<IActionResult> Paging(List<TableDTOs> data, int pageSize, int page = 1)
+        {
+            var dt = data.Skip((page - 1) * pageSize).Take(pageSize);
+            return PartialView("~/Views/TransData/_SearchResultPartialView.cshtml", dt);
         }
     }
 }

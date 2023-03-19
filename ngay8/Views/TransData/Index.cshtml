@@ -1,55 +1,61 @@
-﻿@model Service.Application.TransDataFeature.Queries.GetSearchRequest
+﻿@model SearchVM
 @{
     ViewData["Title"] = "Multi Search";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
 }
+<style>
+    .error {
+        color: #F00;
+        background-color: #FFF;
+    }
+</style>
 
-<form id="studentForm" class="row g-3">
+<div>
+    <form id="form" class="row g-3" method="post">
 
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-    <div class="col-md-4">Search Criteria</div>
+        <div class="col-md-4">Search Criteria</div>
 
-    <div class="col-md-4">
-        <input class="form-check-input" type="radio" name="op" value="1" checked>
-        <label class="form-check-label">GCE</label>
-    </div>
-    <div class="col-md-4">
-        <input class="form-check-input" type="radio" name="op" value="2">
-        <label class="form-check-label">GCR</label>
-    </div>
+        <div class="col-md-4">
+            <input class="form-check-input" type="radio" name="op" value="1" checked>
+            <label class="form-check-label">GCE</label>
+        </div>
+        <div class="col-md-4">
+            <input class="form-check-input" type="radio" name="op" value="2">
+            <label class="form-check-label">GCR</label>
+        </div>
 
-    <div class="col-md-6">
-        <label for="inputEmail4" class="form-label">Agent CEA NO</label>
-        <input type="form-control" class="form-control" asp-for="AgentCEANO">
-        <span asp-validation-for="AgentCEANO" class="text-danger"></span>
-    </div>
+        <div class="col-md-6">
+            <label for="inputEmail4" class="form-label">Agent CEA NO</label>
+            <input class="form-control mygroup" asp-for="AgentCEANO">
+            <span asp-validation-for="AgentCEANO" class="text-danger"></span>
+        </div>
 
-    <div class="col-md-6">
-        <label for="inputPassword4" class="form-label">Agent NAME</label>
-        <input type="form-control" class="form-control" asp-for="AgentName">
-        <span asp-validation-for="AgentName" class="text-danger"></span>
-    </div>
+        <div class="col-md-6">
+            <label for="inputPassword4" class="form-label">Agent NAME</label>
+            <input class="form-control mygroup" asp-for="AgentName">
+            <span asp-validation-for="AgentName" class="text-danger"></span>
+        </div>
 
-    <div class="col-md-12">
-        <label for="inputEmail4" class="form-label">Submission Date/Received</label>
-    </div>
+        <div class="col-md-12">
+            <label for="inputEmail4" class="form-label">Submission Date/Received</label>
+        </div>
 
-    <div class="col-md-6 mt-0">
-        <label for="inputEmail4" class="form-label">From</label>
-        <input type="date" class="form-control" asp-for="From">
-        <span asp-validation-for="From" class="text-danger"></span>
+        <div class="col-md-6 mt-0">
+            <label for="inputEmail4" class="form-label">From</label>
+            <input type="date" class="form-control" asp-for="From">
+            <span asp-validation-for="From" class="text-danger"></span>
+        </div>
 
-    </div>
-    <div class="col-md-6 mt-0">
-        <label for="inputEmail4" class="form-label">To</label>
-        <input type="date" class="form-control" asp-for="To">
-        <span asp-validation-for="To" class="text-danger"></span>
-    </div>
-    <button type="button" class="btn btn-primary" id="Search" onclick="SaveStudent()">Search</button>
-</form>
-
+        <div class="col-md-6 mt-0">
+            <label for="inputEmail4" class="form-label">To</label>
+            <input type="date" class="form-control" asp-for="To">
+            <span asp-validation-for="To" class="text-danger"></span>
+        </div>
+        <button type="button" class="btn btn-primary" id="Search" onclick="SearchClick()">Search</button>
+    </form>
+</div>
 
 <div id="partialViewContainer"></div>
 
@@ -57,55 +63,70 @@
 
 @section Scripts{
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js" integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js" integrity="sha512-xq+Vm8jC94ynOikewaQXMEkJIOBp7iArs3IhFWSWdRT3Pq8wFz46p+ZDFAR7kHnSFf+zUv52B3prRYnbDRdgog==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/additional-methods.min.js"></script>
 
     <script>
-        $(document).ready(function () {
-
-            //$.validator.unobtrusive.parse($("#studentForm"));
-
-            $("#studentForm").validate({
-                rules: {
-                    AgentCEANO: {
-                        required: true,
-                    },
-                    AgentName: {
-                        required: true,
-                    },
-                    From: {
-                        required: true,
-                    },
-                    To: {
-                        required: true,
-                    }
+        $.validator.addMethod("dateFrom",
+            function (value, element) {
+                let d = new Date(value);
+                r = (d >= new Date('2015-01-01') && d <= new Date());
+                return r;
+            },
+            "Date >=  2015-01-01 && Date <= Date time now"
+        );
+        $.validator.addMethod("dateTo",
+            function (value, element) {
+                let z = document.querySelector('input[name="From"]').value;
+                let preD = new Date(z.split('-')[0], z.split('-')[1] - 1, z.split('-')[2]);
+                let d = new Date(value);
+                r = (d <= new Date() && d >= preD);
+                return r; // FALSE => THÔNG BÁO
+            },
+            "Date <= DateNow , Date >= preDay"
+        );
+        $("#form").validate({
+            rules: {
+                AgentCEANO: {
+                    require_from_group: [1, ".mygroup"],
+                    minlength: 3,
+                    maxlength: 100,
                 },
-                messages: {
-                    AgentCEANO: {
-                        required: "Please enter first",
-                    },
-                    AgentName: {
-                        required: "Please enter middle",
-                    },
-                    From: {
-                        required: "Please enter middle",
-                    },
-                    To: {
-                        required: "Please enter middle",
-                    }
+                AgentName: {
+                    require_from_group: [1, ".mygroup"],
+                    minlength: 3,
+                    maxlength: 100,
+                },
+                From: {
+                    required: true,
+                    dateFrom: true
+                },
+                To: {
+                    required: true,
+                    dateTo: true
                 }
-            });
-
-
-
-
-        })
-
-        function SaveStudent() {
-            if ($("#studentForm").valid()) {
-                var formData = $("#studentForm").serialize();
+            },
+            messages: {
+                AgentCEANO: {
+                    minlength: "Min length = 3",
+                },
+                AgentName: {
+                    minlength: "Min length = 3",
+                },
+                From: {
+                    required: "Vui lòng nhập ở đây",
+                },
+                To: {
+                    required: "Vui lòng nhập ở đây",
+                }
+            },
+        });
+        function SearchClick() {
+            if ($("#form").valid()) {
+                var formData = $("#form").serialize();
                 $.ajax({
-                    url: '/TransData/Search',
+                    url: '/TransData/Index',
                     type: "POST",
                     data: formData,
                     success: function (result) {
@@ -113,7 +134,7 @@
                         $('#partialViewContainer').html(result);
                     },
                     error: function (response) {
-                        console.log(`error`);
+                        console.log(response.responseText);
                     },
                 });
             }
