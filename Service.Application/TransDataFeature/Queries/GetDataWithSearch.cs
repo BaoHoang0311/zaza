@@ -3,14 +3,11 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Service.Application.DTOs;
 using Service.Domain.Models;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Xml.Linq;
+using X.PagedList;
 
 namespace Service.Application.TransDataFeature.Queries
 {
-
-    public class GetSearchRequest : IRequest<List<TableDTOs>>
+    public partial class GetSearchRequest : IRequest<IPagedList<TableDTOs>>
     {
         public int op { get; set; }
         public string? AgentCEANO { get; set; }
@@ -18,7 +15,22 @@ namespace Service.Application.TransDataFeature.Queries
         public DateTime? From { get; set; }
         public DateTime? To { get; set; }
     }
-    public class GetDataHandler : IRequestHandler<GetSearchRequest, List<TableDTOs>>
+    public partial class GetSearchRequest : IRequest<IPagedList<TableDTOs>>
+    {
+        // Paging
+        public int Page { get; set; } = 4;
+        public int PageSize { get; set; } = 25;
+        public int TotalRecord { get; set; }
+    }
+    public static class Helper
+    {
+        public static IPagedList<T> PageResultAsync<T>(this IQueryable<T> query, int page, int pageSize)
+        {
+            var result = query.ToPagedList(page, pageSize);
+            return result;
+        }
+    }
+    public class GetDataHandler : IRequestHandler<GetSearchRequest, IPagedList<TableDTOs>>
     {
         private readonly AestrainingContext _context;
         private readonly IMapper _mapper;
@@ -27,7 +39,7 @@ namespace Service.Application.TransDataFeature.Queries
             _context = context;
             _mapper = mapper;
         }
-        public async Task<List<TableDTOs>> Handle (GetSearchRequest keySearch, CancellationToken cancellationToken)
+        public async Task<IPagedList<TableDTOs>> Handle(GetSearchRequest keySearch, CancellationToken cancellationToken)
         {
             var transactionDatas = _context.TransactionDatas
                                     .Where(x => x.ClosingAgtCeano == keySearch.AgentCEANO || x.ClosingAgtBizName == keySearch.AgentName)
@@ -35,13 +47,15 @@ namespace Service.Application.TransDataFeature.Queries
 
             List<TableDTOs> tableDto = new List<TableDTOs>();
 
+            IPagedList<TableDTOs> resTable;
+
             if (keySearch.op == 1)
             {
                 var gceData = await transactionDatas.Include(m => m.TransactionGcedata.Where(x => x.SubDate >= keySearch.From && x.SubDate <= keySearch.To)).ToListAsync();
 
                 foreach (var item in gceData)
                 {
-                    if(item.TransactionGcedata != null)
+                    if (item.TransactionGcedata != null)
                     {
                         foreach (var item1 in item.TransactionGcedata)
                         {
@@ -50,7 +64,7 @@ namespace Service.Application.TransDataFeature.Queries
                                 ProjectNane = item.ProjectName,
                                 TransactedPrice = item.TransactedPrice,
                                 TransactedCol = item.TransactionComm,
-                                
+
                                 Id = item1.Id,
                                 TransID = item1.TransId,
                                 GrossValue = item1.GrossValue,
@@ -62,11 +76,10 @@ namespace Service.Application.TransDataFeature.Queries
                         }
                     }
                 }
-
             }
             else
             {
-                var gcrData = await transactionDatas.Include(m => m.TransactionGcrdatas.Where(x =>x.RcvDate >= keySearch.From && x.RcvDate <= keySearch.To)).ToListAsync();
+                var gcrData = await transactionDatas.Include(m => m.TransactionGcrdatas.Where(x => x.RcvDate >= keySearch.From && x.RcvDate <= keySearch.To)).ToListAsync();
 
                 foreach (var item in gcrData)
                 {
@@ -92,8 +105,10 @@ namespace Service.Application.TransDataFeature.Queries
                     }
                 }
             }
-
-            return tableDto.OrderBy(m=> m.TransID).ToList();
+            resTable = tableDto.AsQueryable().PageResultAsync(keySearch.Page, keySearch.PageSize);
+            return resTable;
         }
     }
+
 }
+
