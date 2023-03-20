@@ -40,10 +40,9 @@ namespace ngay8.Controllers
                 };
                 ViewBag.CurrentPage = page;
                 ViewBag.KKK = search;
-                var z = await _mediator.Send(getSearchRequest);
-                PagedList<TableDTOs> models = new PagedList<TableDTOs>(z.AsQueryable(), pageNumber, pageSize);
+                var resSearch = await _mediator.Send(getSearchRequest);
 
-                return PartialView("~/Views/TransData/_SearchResultPartialView.cshtml", models);
+                return PartialView("~/Views/TransData/_SearchResultPartialView.cshtml", resSearch);
 
             }
             return BadRequest("LỖI");
