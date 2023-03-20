@@ -2,8 +2,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using ngay8.Models;
-using PagedList.Core;
-using Service.Application.DTOs;
 using Service.Application.TransDataFeature.Queries;
 
 namespace ngay8.Controllers
@@ -24,22 +22,21 @@ namespace ngay8.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Index(SearchVM search, int? page)
+        public async Task<IActionResult> Search(SearchVM search, int? page)
         {
             if (ModelState.IsValid)
             {
-                var pageNumber = page == null || page <= 0 ? 1 : page.Value;
-                var pageSize = 2;
                 var getSearchRequest = new GetSearchRequest()
                 {
                     op = search.op,
                     AgentName = search.AgentName,
                     AgentCEANO = search.AgentCEANO,
                     From = search.From,
+                    Page = search.Page,
+                    PageSize =search.PageSize,
                     To = search.To,
                 };
-                ViewBag.CurrentPage = page;
-                ViewBag.KKK = search;
+
                 var resSearch = await _mediator.Send(getSearchRequest);
 
                 return PartialView("~/Views/TransData/_SearchResultPartialView.cshtml", resSearch);

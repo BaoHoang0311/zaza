@@ -1,66 +1,90 @@
 ﻿@using Service.Application.DTOs;
-@model List<TableDTOs>
+@using X.PagedList;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common;
+@model IPagedList<TableDTOs>;
 
-@*@using PagedList.Core.Mvc;
-@model PagedList.Core.IPagedList<TableDTOs>*@
-
+@*@model List<TableDTOs>*@
 @{
     int j = 0;
 }
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>STT</th>
-            <th>ID</th>
-            <th>TransID</th>
-            <th rowspan="1">
-                AgentName<br />
-                CEANO
-            </th>
-            <th>Project Name</th>
-            <th>SubDate / Rcv Date</th>
-            <th scope="col">
-                Transacted Price <br />
-                Trasaction Column
-            </th>
-            <th scope="col">
-                Gross Value <br />
-                Net Value
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model != null)
+<!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
+<nav>
+    <div class="row float-end mt-4 mb-10" id="paging">
+        @Html.PagedListPager(Model, page => Url.Action("Index" ,new { page }), new PagedListRenderOptions()
         {
-            @for (int i = 0; i < Model.Count; i++)
+            ActiveLiElementClass = "active",
+            PageClasses = new[]{ "page-link"},
+            LiElementClasses=new[] { "page-item" },
+            UlElementClasses = new[] { "pagination","justify-content-center", "mt-3" },
+            LinkToNextPageFormat = "Next",
+            LinkToPreviousPageFormat = "Previous",
+            MaximumPageNumbersToDisplay = 5,
+        })
+    </div>
+</nav>
+
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>ID</th>
+                <th>TransID</th>
+                <th rowspan="1">
+                    AgentName<br />
+                    CEANO
+                </th>
+                <th>Project Name</th>
+                <th>SubDate / Rcv Date</th>
+                <th scope="col">
+                    Transacted Price <br />
+                    Trasaction Column
+                </th>
+                <th scope="col">
+                    Gross Value <br />
+                    Net Value
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null)
             {
-                <tr>
-                    @{
-                        j++;
-                    }
-                    <td>@j</td>
-                    <td>@Model[i].Id</td>
-                    <td>@Model[i].TransID</td>
-                    <td>
-                        @Model[i].AgentName <br>
-                        @Model[i].CEANo
-                    </td>
-                    <td> @Model[i].ProjectNane </td>
-                    <td> @Model[i].Date?.ToShortDateString()</td>
-                    <td>
-                        @Model[i].TransactedPrice?.ToString("#,##0") <br>
-                        @Model[i].TransactedCol?.ToString("#,##0")
-                    </td>
-                    <td>
-                        @Model[i].GrossValue?.ToString("#,##0")<br />
-                        @Model[i].NetValue?.ToString("#,##0")
-                    </td>
-                </tr>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        @{
+                            j++;
+                        }
+                        <td>@j</td>
+                        <td>@item.Id</td>
+                        <td>@item.TransID</td>
+                        <td>
+                            @item.AgentName <br>
+                            @item.CEANo
+                        </td>
+                        <td> @item.ProjectNane </td>
+                        <td> @item.Date?.ToShortDateString()</td>
+                        <td>
+                            @item.TransactedPrice?.ToString("#,##0") <br>
+                            @item.TransactedCol?.ToString("#,##0")
+                        </td>
+                        <td>
+                            @item.GrossValue?.ToString("#,##0")<br />
+                            @item.NetValue?.ToString("#,##0")
+                        </td>
+                    </tr>
+                }
             }
-        }
-</table>
+    </table>
+</div>
 
 
 
-@*asp-route-keySearch="@ViewBag.KKK"*@
+<!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
+@*<div class="row float-end mt-4 mb-4" id="paging">
+    <Pagination paged-list="@Model"
+                url="@Url.Action("Index", "TransData")">
+    </Pagination>
+</div>*@

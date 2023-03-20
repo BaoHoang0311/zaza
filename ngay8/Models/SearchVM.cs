@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace ngay8.Models
 {
-    public class SearchVM
+    public partial class SearchVM
     {
         public int op { get; set; }
         [OneRequired("AgentName")]
@@ -24,6 +24,14 @@ namespace ngay8.Models
         [ValidationTo("From")]
         public DateTime? To { get; set; }
     }
+    public partial class SearchVM
+    {
+        // Paging
+        public int Page { get; set; } = 4;
+        public int PageSize { get; set; } = 25;
+        public int TotalRecord { get; set; }
+    }
+
     public class OneRequired : ValidationAttribute
     {
         private string otherProperty;
