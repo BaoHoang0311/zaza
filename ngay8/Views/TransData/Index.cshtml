@@ -45,13 +45,13 @@
 
         <div class="col-md-6 mt-0">
             <label for="inputEmail4" class="form-label">From</label>
-            <input type="date" class="form-control" asp-for="From">
+            <input type="date" class="form-control"  value="2016-03-11" asp-for="From">
             <span asp-validation-for="From" class="text-danger"></span>
         </div>
 
         <div class="col-md-6 mt-0">
             <label for="inputEmail4" class="form-label">To</label>
-            <input type="date" class="form-control" asp-for="To">
+            <input type="date" class="form-control" value="2022-03-11" asp-for="To">
             <span asp-validation-for="To" class="text-danger"></span>
         </div>
         <button type="button" class="btn btn-primary" id="Search" onclick="SearchClick()">Search</button>
@@ -145,18 +145,27 @@
 
         $(document).on('click', '.pagination a', function (event) {
             event.preventDefault();
-            var page = $(this).attr('href');
-            var formData = $("#form").serialize();
+            let page = $(this).attr('href');
+            let formData = $("#form").serialize();
 
             console.log(page);
 
             formData.page= page;
             console.log(formData);
 
+
+            let searchData = {
+                op:  formData.op,
+                Page: page
+            };
+            console.log(searchData);
             $.ajax({
                 method: "POST",
                 url: '/TransData/Search',
-                data: formData,
+                data: {
+                    Page : page,
+                    Search: SearchData,
+                },
                 success: function (data) {
                     //$('.paged-data-container').html(data);
                 },
