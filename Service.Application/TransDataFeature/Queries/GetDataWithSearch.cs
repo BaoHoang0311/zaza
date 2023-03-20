@@ -5,23 +5,17 @@ using Service.Application.DTOs;
 using Service.Domain.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace Service.Application.TransDataFeature.Queries
 {
+
     public class GetSearchRequest : IRequest<List<TableDTOs>>
     {
         public int op { get; set; }
-        [Required(ErrorMessage = "Vui lòng nhập")]
-
         public string? AgentCEANO { get; set; }
-        [Required(ErrorMessage = "Vui lòng nhập")]
-
         public string? AgentName { get; set; }
-        [Required(ErrorMessage = "Vui lòng nhập")]
-
         public DateTime? From { get; set; }
-        [Required(ErrorMessage = "Vui lòng nhập")]
-
         public DateTime? To { get; set; }
     }
     public class GetDataHandler : IRequestHandler<GetSearchRequest, List<TableDTOs>>
@@ -43,33 +37,63 @@ namespace Service.Application.TransDataFeature.Queries
 
             if (keySearch.op == 1)
             {
-                tableDto = await transactionDatas.Include(m => m.TransactionGcedata.Where(x => x.SubDate >= keySearch.From && x.SubDate <= keySearch.To))
-                                            .Select(o => new TableDTOs()
-                                            {
-                                                TransID = o.TransId,
-                                                ProjectNane = o.ProjectName,
-                                                TransactedPrice = o.TransactedPrice,
-                                                TransactedCol = o.TransactionComm,
-                                                Gcedata = o.TransactionGcedata.ToList(),
-                                                Gcrdata = o.TransactionGcrdatas.ToList(),
-                                            }).OrderBy(o=>o.TransID).AsNoTracking().ToListAsync();
+                var gceData = await transactionDatas.Include(m => m.TransactionGcedata.Where(x => x.SubDate >= keySearch.From && x.SubDate <= keySearch.To)).ToListAsync();
 
+                foreach (var item in gceData)
+                {
+                    if(item.TransactionGcedata != null)
+                    {
+                        foreach (var item1 in item.TransactionGcedata)
+                        {
+                            tableDto.Add(new TableDTOs
+                            {
+                                ProjectNane = item.ProjectName,
+                                TransactedPrice = item.TransactedPrice,
+                                TransactedCol = item.TransactionComm,
+                                
+                                Id = item1.Id,
+                                TransID = item1.TransId,
+                                GrossValue = item1.GrossValue,
+                                NetValue = item1.NetValue,
+                                Date = item1.SubDate,
+                                AgentName = item1.AgtBizName,
+                                CEANo = item1.AgtCeano,
+                            });
+                        }
+                    }
+                }
 
             }
             else
             {
-                tableDto = await transactionDatas.Include(m => m.TransactionGcrdatas.Where(x => x.RcvDate >= keySearch.From && x.RcvDate <= keySearch.From))
-                                            .Select(o => new TableDTOs
-                                            {
-                                                TransID = o.TransId,
-                                                ProjectNane = o.ProjectName,
-                                                TransactedPrice = o.TransactedPrice,
-                                                TransactedCol = o.TransactionComm,
-                                                Gcrdata = o.TransactionGcrdatas.ToList(),
-                                            }).OrderBy(o => o.TransID).AsNoTracking().ToListAsync(); 
+                var gcrData = await transactionDatas.Include(m => m.TransactionGcrdatas.Where(x =>x.RcvDate >= keySearch.From && x.RcvDate <= keySearch.To)).ToListAsync();
+
+                foreach (var item in gcrData)
+                {
+                    if (item.TransactionGcrdatas != null)
+                    {
+                        foreach (var item1 in item.TransactionGcrdatas)
+                        {
+                            tableDto.Add(new TableDTOs
+                            {
+                                ProjectNane = item.ProjectName,
+                                TransactedPrice = item.TransactedPrice,
+                                TransactedCol = item.TransactionComm,
+
+                                Id = item1.Id,
+                                TransID = item1.TransId,
+                                GrossValue = item1.GrossValue,
+                                NetValue = item1.NetValue,
+                                Date = item1.RcvDate,
+                                AgentName = item1.AgtBizName,
+                                CEANo = item1.AgtCeano,
+                            });
+                        }
+                    }
+                }
             }
 
-            return tableDto;
+            return tableDto.OrderBy(m=> m.TransID).ToList();
         }
     }
 }
