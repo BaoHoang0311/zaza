@@ -12,7 +12,7 @@
 <!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
 <nav>
     <div class="row float-end mt-4 mb-10" id="paging">
-        @Html.PagedListPager(Model, page => Url.Action("Index" ,new { page }), new PagedListRenderOptions()
+        @Html.PagedListPager(Model, page => Url.Content($"{page}"), new PagedListRenderOptions()
         {
             ActiveLiElementClass = "active",
             PageClasses = new[]{ "page-link"},
@@ -79,12 +79,3 @@
             }
     </table>
 </div>
-
-
-
-<!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
-@*<div class="row float-end mt-4 mb-4" id="paging">
-    <Pagination paged-list="@Model"
-                url="@Url.Action("Index", "TransData")">
-    </Pagination>
-</div>*@

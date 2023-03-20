@@ -130,7 +130,7 @@
                 var formData = $("#form").serialize();
                 $.ajax({
                     url: '/TransData/Search',
-                    type: "Post",
+                    method: "Post",
                     data: formData,
                     success: function (result) {
                         $('#partialViewContainer').empty();
@@ -142,5 +142,28 @@
                 });
             }
         }
+
+        $(document).on('click', '.pagination a', function (event) {
+            event.preventDefault();
+            var page = $(this).attr('href');
+            var formData = $("#form").serialize();
+
+            console.log(page);
+
+            formData.page= page;
+            console.log(formData);
+
+            $.ajax({
+                method: "POST",
+                url: '/TransData/Search',
+                data: formData,
+                success: function (data) {
+                    //$('.paged-data-container').html(data);
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        });
     </script>
 }

@@ -18,8 +18,8 @@ namespace Service.Application.TransDataFeature.Queries
     public partial class GetSearchRequest : IRequest<IPagedList<TableDTOs>>
     {
         // Paging
-        public int Page { get; set; } = 4;
-        public int PageSize { get; set; } = 25;
+        public int Page { get; set; }
+        public int PageSize { get; set; }
         public int TotalRecord { get; set; }
     }
     public static class Helper

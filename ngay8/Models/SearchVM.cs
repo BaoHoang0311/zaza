@@ -27,8 +27,8 @@ namespace ngay8.Models
     public partial class SearchVM
     {
         // Paging
-        public int Page { get; set; } = 4;
-        public int PageSize { get; set; } = 25;
+        public int? Page { get; set; } = 4;
+        public int? PageSize { get; set; } = 25;
         public int TotalRecord { get; set; }
     }
 

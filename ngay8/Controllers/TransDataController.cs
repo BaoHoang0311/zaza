@@ -22,7 +22,7 @@ namespace ngay8.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Search(SearchVM search, int? page)
+        public async Task<IActionResult> Search(SearchVM search, int? Page)
         {
             if (ModelState.IsValid)
             {
@@ -32,8 +32,8 @@ namespace ngay8.Controllers
                     AgentName = search.AgentName,
                     AgentCEANO = search.AgentCEANO,
                     From = search.From,
-                    Page = search.Page,
-                    PageSize =search.PageSize,
+                    Page = search.Page.Value,
+                    PageSize =search.PageSize.Value,
                     To = search.To,
                 };
 
