@@ -1,6 +1,9 @@
 ﻿@using Service.Application.DTOs;
 @model List<TableDTOs>
 
+@*@using PagedList.Core.Mvc;
+@model PagedList.Core.IPagedList<TableDTOs>*@
+
 @{
     int j = 0;
 }
@@ -58,3 +61,6 @@
         }
 </table>
 
+
+
+@*asp-route-keySearch="@ViewBag.KKK"*@

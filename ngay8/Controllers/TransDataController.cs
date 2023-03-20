@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewEngines;
 using ngay8.Models;
+using PagedList.Core;
 using Service.Application.DTOs;
 using Service.Application.TransDataFeature.Queries;
 
@@ -24,10 +24,12 @@ namespace ngay8.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Index(SearchVM search)
+        public async Task<IActionResult> Index(SearchVM search, int? page)
         {
             if (ModelState.IsValid)
             {
+                var pageNumber = page == null || page <= 0 ? 1 : page.Value;
+                var pageSize = 2;
                 var getSearchRequest = new GetSearchRequest()
                 {
                     op = search.op,
@@ -36,16 +38,16 @@ namespace ngay8.Controllers
                     From = search.From,
                     To = search.To,
                 };
+                ViewBag.CurrentPage = page;
+                ViewBag.KKK = search;
                 var z = await _mediator.Send(getSearchRequest);
-                return PartialView("~/Views/TransData/_SearchResultPartialView.cshtml",z);
+                PagedList<TableDTOs> models = new PagedList<TableDTOs>(z.AsQueryable(), pageNumber, pageSize);
+
+                return PartialView("~/Views/TransData/_SearchResultPartialView.cshtml", models);
+
             }
-            //return BadRequest("LỖI"); 
-            return View("Index");
-        }
-        public async Task<IActionResult> Paging(List<TableDTOs> data, int pageSize, int page = 1)
-        {
-            var dt = data.Skip((page - 1) * pageSize).Take(pageSize);
-            return PartialView("~/Views/TransData/_SearchResultPartialView.cshtml", dt);
+            return BadRequest("LỖI");
+            //return View("Index");
         }
     }
 }
