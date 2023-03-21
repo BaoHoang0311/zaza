@@ -23,7 +23,7 @@ namespace ngay8.Models
         [Required(ErrorMessage = "Vui lòng nhập")]
         [ValidationTo("From")]
         public DateTime? To { get; set; }
-
+        public string fileName { get; set; }
     }
     public partial class SearchVM
     {

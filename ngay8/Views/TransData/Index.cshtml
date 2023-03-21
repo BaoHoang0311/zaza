@@ -13,7 +13,6 @@
 
 <div>
     <form id="form" class="row g-3" method="post">
-
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
         <div class="col-md-4">Search Criteria</div>
@@ -57,10 +56,7 @@
         <button type="button" class="btn btn-primary" id="Search" onclick="SearchClick()">Search</button>
     </form>
 </div>
-
 <div id="partialViewContainer"></div>
-
-
 
 @section Scripts{
 
@@ -72,10 +68,10 @@
         $.validator.addMethod("dateFrom",
             function (value, element) {
                 let d = new Date(value);
-                r = (d >= new Date('2015-01-01') && d <= new Date());
+                r = (d >= new Date('2016-01-01') && d <= new Date());
                 return r;
             },
-            "Date >=  2015-01-01 && Date <= Date time now"
+            "Date >=  2016-01-01 && Date <= Date time now"
         );
         $.validator.addMethod("dateTo",
             function (value, element) {
@@ -136,6 +132,8 @@
                         $('#partialViewContainer').html(result);
                     },
                     error: function (response) {
+                        $('#form').empty();
+                        alert("error");
                         console.log(response.responseText);
                     },
                 });
@@ -143,14 +141,22 @@
         }
 
         $(document).on('click', '.pagination a', function (event) {
+
             event.preventDefault();
+
             let page = $(this).attr('href');
-            let formData = $("#form").serializeArray();
-            formData.push({ name: "Page", value: page });
+            //let formData = $("#form").serializeArray();
+            //formData.push({ name: "Page", value: page });
+
+            let data = {};
+            let formData = $("#form").serializeArray().map(function (x) { data[x.name] = x.value == "" ? null : x.value; });;
+            data.Page = page;
+
             $.ajax({
                 method: "POST",
                 url: '/TransData/Search',
-                data: $.param(formData),
+                data: data,
+                //data: $.param(formData),
                 success: function (result) {
                     $('#partialViewContainer').empty();
                     $('#partialViewContainer').html(result);
@@ -162,9 +168,8 @@
         });
 
         //function Export() {
-
         //    let page = document.querySelector(".active").value;
-        //    let formData = $("#form").serializeArray(); 
+        //    let formData = $("#form").serializeArray();
         //    formData.push({ name: "Page", value: page });
         //    console.log(formData);
         //    $.ajax({
@@ -180,6 +185,52 @@
         //        },
         //    });
         //}
+
+        // Handle Export
+        $(document).on("click", "#handleExport", function () {
+            let page = document.querySelector(".active").value;
+            let data = {};
+            let formData = $("#form").serializeArray().map(function (x) { data[x.name] = x.value == "" ? null : x.value; });;
+            data.fileName = "rental.xlsx";
+            let url = "/TransData/Excel";
+            downloadFile(url, data);
+        });
+
+        function downloadFile(url, data, onSuccess, onError) {
+            console.log(data);
+            // Use XMLHttpRequest instead of Jquery $ajax
+            xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                //debugger;
+                let a;
+                if (xhttp.readyState === 4) {
+                    if (xhttp.status === 200) {
+                        // Trick for making downloadable link
+                        a = document.createElement('a');
+                        a.id = 'btn-download-' + new Date().getTime();
+                        a.href = window.URL.createObjectURL(xhttp.response);
+                        a.download = data.fileName;
+                        a.style.display = 'none';
+                        document.body.appendChild(a);
+                        a.click();
+
+                        if (onSuccess != undefined && typeof onSuccess === "function")
+                            onSuccess();
+
+                    } else if (xhttp.status === 500 && onError != undefined && typeof onError === "function") {
+                        onError();
+                    }
+                }
+            };
+
+            // Post data to URL which handles post request
+            xhttp.open("POST", url);
+            xhttp.setRequestHeader("Content-type", "application/json"); //"multipart/form-data", "application/x-www-form-urlencoded", "application/json"
+
+            // You should set responseType as blob for binary responses
+            xhttp.responseType = 'blob';
+            xhttp.send(JSON.stringify(data));
+        };
 
     </script>
 }

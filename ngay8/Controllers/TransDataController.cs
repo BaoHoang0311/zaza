@@ -8,6 +8,8 @@ using Service.Application.TransDataFeature.Queries;
 using Service.Application.DTOs;
 using System.Data;
 using System.Reflection;
+using OfficeOpenXml.Attributes;
+using Service.Application.Helper;
 
 namespace ngay8.Controllers
 {
@@ -38,7 +40,7 @@ namespace ngay8.Controllers
                     AgentCEANO = search.AgentCEANO,
                     From = search.From.Value,
                     To = search.To,
-                    Page = search.Page.Value,
+                    Page = search.Page,
                     PageSize = search.PageSize.Value,
 
                 };
@@ -48,49 +50,48 @@ namespace ngay8.Controllers
                 return PartialView("~/Views/TransData/_SearchResultPartialView.cshtml", resSearch);
 
             }
-            return BadRequest("LỖI");
-            //return View("Index");
+            //return BadRequest("LỖI");
+            return View("Index");
+        }
+        public class A
+        {
+            public string name { get; set; }
+            public B giatri { get; set; }
+        }
+        public class B
+        {
+            public int a { get; set; }
+            public int b { get; set; }
         }
         [HttpPost]
-        public async Task<IActionResult> DownloadReport(SearchVM search)
+        public async Task<IActionResult> Excel([FromBody] SearchVM search)
         {
-
-            var getSearchRequest = new GetSearchRequest()
+            if (ModelState.IsValid)
             {
-                op = 1,
-                AgentCEANO = "207607465H",
-                AgentName = null,
-                From = new DateTime(2016, 01, 01),
-                To = new DateTime(2023, 01, 01),
-                Page = 1,
-                PageSize = 25,
-            };
-            var resSearch = await _mediator.Send(getSearchRequest);
+                var getSearchRequest = new GetSearchRequest()
+                {
+                    op = 1,
+                    AgentCEANO = search.AgentCEANO,
+                    AgentName = search.AgentName,
+                    From = search.From,
+                    To = search.To,
+                    Page = null,
+                };
+                var resSearch = await _mediator.Send(getSearchRequest);
 
-            string reportname = $"User_Wise.xlsx";
-
-            if (resSearch.Count > 0)
-            {
-                var exportbytes = ExporttoExcel(resSearch.ToList(), reportname);
-                return File(exportbytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", reportname);
+                if (resSearch.Count > 0)
+                {
+                    var exportbytes = resSearch.ToList().ExporttoExcel(search.fileName);
+                    return File(exportbytes, "application/octet-stream");
+                }
+                else
+                {
+                    TempData["Message"] = "No Data to Export";
+                    return View();
+                }
             }
-            else
-            {
-                TempData["Message"] = "No Data to Export";
-                return View();
-            }
+            return null;
         }
-        private byte[] ExporttoExcel<T>(List<T> table, string filename)
-        {
-            using ExcelPackage pack = new ExcelPackage();
-            ExcelWorksheet ws = pack.Workbook.Worksheets.Add(filename);
-            List<string[]> headerRow = new List<string[]>()
-            {
-                new string[] { "ID", "TransID", "Agent Name", "CEANo", "GrossValue", "NetValue", "Date", "ProjectNane", "TransactedPrice", "TransactedCol" }
-            };
-            var membersToShow = typeof(TableDTOs).GetMember().Where(p => headerRow.Contains(p[0].Name)).ToArray();
-            ws.Cells["A2"].LoadFromCollection(table, true, TableStyles.Light1, BindingFlags.Default, membersToShow);
-            return pack.GetAsByteArray();
-        }
+
     }
 }

@@ -21,11 +21,11 @@ namespace ngay8.Models
 
             var otherPropertyValue = otherPropertyInfo?.GetValue(validationContext.ObjectInstance, null);
 
-            if (otherPropertyValue == null && value == null)
+            if (string.IsNullOrEmpty(otherPropertyValue?.ToString()) && string.IsNullOrEmpty(value?.ToString()))
             {
                 return new ValidationResult(string.Format("Please fill at least 1 of these fields."));
             }
-            else if (otherPropertyValue != null && value != null)
+            else if ( !string.IsNullOrEmpty(otherPropertyValue?.ToString()) && !string.IsNullOrEmpty(value?.ToString()))
             {
                 return ValidationResult.Success;
             }

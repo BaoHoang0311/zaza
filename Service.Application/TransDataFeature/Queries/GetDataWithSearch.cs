@@ -19,7 +19,7 @@ namespace Service.Application.TransDataFeature.Queries
     public partial class GetSearchRequest : IRequest<IPagedList<TableDTOs>>
     {
         // Paging
-        public int Page { get; set; }
+        public int? Page { get; set; }
         public int PageSize { get; set; }
         public int TotalRecord { get; set; }
     }
@@ -98,7 +98,14 @@ namespace Service.Application.TransDataFeature.Queries
                     }
                 }
             }
-            resTable = tableDto.AsQueryable().PageResultAsync(keySearch.Page, keySearch.PageSize);
+            if(keySearch.Page != null)
+            {
+                resTable = tableDto.AsQueryable().PageResultAsync(keySearch.Page.Value, keySearch.PageSize);
+            }
+            else
+            {
+                resTable = tableDto.AsQueryable().ExcelAsync();
+            }
             return resTable;
         }
     }

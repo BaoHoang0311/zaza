@@ -1,4 +1,5 @@
 ﻿@using Service.Application.DTOs;
+@using System.Globalization;
 @using X.PagedList;
 @using X.PagedList.Mvc.Core;
 @using X.PagedList.Web.Common;
@@ -9,34 +10,27 @@
     int j = 0;
 }
 
-<!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
 
-<div class="col-md-12">
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Download Report</h3>
-        </div>
-        <form autocomplete="off" asp-controller="TransData" asp-antiforgery="true" asp-action="DownloadReport" method="post">
-            <div class="card-body register-card-body">
-                <div class="form-row">
-                    <button type="submit" id="btnsubmit" class="btn btn-success">Export to Excel</button>
-                </div>
-
-            </div>
-            <div class="card-footer">
-            </div>
-        </form>
+<div class="d-flex justify-content-between align-items-center mt-5">
+    <div>
+        <button id="handleExport" class="btn btn-info">Export Excel</button>
     </div>
-</div>
+    <div class="d-flex justify-content-between align-items-center">
 
-@*<div class="mt-3 float-left">
-    <button id="Excel" class="btn btn-primary " onclick="Export()">Export Excel</button>
-</div>
-*@
-<nav>
-    <div class="row float-end mt-4 mb-10" id="paging">
-        @Html.PagedListPager(Model, page => Url.Content($"{page}"), new PagedListRenderOptions()
-        {
+        <div class="m-4"><button id="handleExport" class="btn btn-success">TotalRecord: @Model.TotalItemCount</button></div>
+
+        <div class="me-3">
+            <select id="lang" class="form-select form-select-lg mr-3" aria-label=".form-select-lg example">
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+        </div>
+
+
+        <div>
+            @Html.PagedListPager(Model, page => Url.Content($"{page}"), new PagedListRenderOptions()
+            {
             ActiveLiElementClass = "active",
             PageClasses = new[]{ "page-link"},
             LiElementClasses=new[] { "page-item" },
@@ -44,36 +38,40 @@
             LinkToNextPageFormat = "Next",
             LinkToPreviousPageFormat = "Previous",
             MaximumPageNumbersToDisplay = 5,
-        })
-    </div>
-</nav>
+            })
+        </div>
 
-<div>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>STT</th>
-                <th>ID</th>
-                <th>TransID</th>
-                <th rowspan="1">
-                    AgentName<br />
-                    CEANO
-                </th>
-                <th>Project Name</th>
-                <th>SubDate / Rcv Date</th>
-                <th scope="col">
-                    Transacted Price <br />
-                    Trasaction Column
-                </th>
-                <th scope="col">
-                    Gross Value <br />
-                    Net Value
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (Model != null)
-            {
+        @*@Html.DropDownList("PageSize", new SelectList(new Dictionary<string, int> { { "10", 10 }, { "20", 20 }, { "100", 100 } }, "Key", "Value"))*@
+    </div>
+</div>
+
+<div class="mb-5">
+    @if (Model != null)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>ID</th>
+                    <th>TransID</th>
+                    <th rowspan="1">
+                        AgentName<br />
+                        CEANO
+                    </th>
+                    <th>Project Name</th>
+                    <th>SubDate / Rcv Date</th>
+                    <th scope="col">
+                        Transacted Price <br />
+                        Trasaction Column
+                    </th>
+                    <th scope="col">
+                        Gross Value <br />
+                        Net Value
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+
                 @foreach (var item in Model)
                 {
                     <tr>
@@ -90,15 +88,15 @@
                         <td> @item.ProjectNane </td>
                         <td> @item.Date?.ToShortDateString()</td>
                         <td>
-                            @item.TransactedPrice?.ToString("#,##0") <br>
-                            @item.TransactedCol?.ToString("#,##0")
+                            @Html.FormatValue(item.TransactedPrice, "${0:0,0}") <br>
+                            @Html.FormatValue(item.TransactedCol, "${0:0,0}")
                         </td>
                         <td>
-                            @item.GrossValue?.ToString("#,##0")<br />
-                            @item.NetValue?.ToString("#,##0")
+                            @Html.FormatValue(item.GrossValue, "${0:0,0}")
+                            @Html.FormatValue(item.NetValue, "${0:0,0}")
                         </td>
                     </tr>
                 }
-            }
-    </table>
+        </table>
+    }
 </div>
