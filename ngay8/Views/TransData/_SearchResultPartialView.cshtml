@@ -10,6 +10,29 @@
 }
 
 <!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
+
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Download Report</h3>
+        </div>
+        <form autocomplete="off" asp-controller="TransData" asp-antiforgery="true" asp-action="DownloadReport" method="post">
+            <div class="card-body register-card-body">
+                <div class="form-row">
+                    <button type="submit" id="btnsubmit" class="btn btn-success">Export to Excel</button>
+                </div>
+
+            </div>
+            <div class="card-footer">
+            </div>
+        </form>
+    </div>
+</div>
+
+@*<div class="mt-3 float-left">
+    <button id="Excel" class="btn btn-primary " onclick="Export()">Export Excel</button>
+</div>
+*@
 <nav>
     <div class="row float-end mt-4 mb-10" id="paging">
         @Html.PagedListPager(Model, page => Url.Content($"{page}"), new PagedListRenderOptions()

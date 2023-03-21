@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Service.Application.DTOs;
+using Service.Application.Helper;
 using Service.Domain.Models;
 using X.PagedList;
 
@@ -21,14 +22,6 @@ namespace Service.Application.TransDataFeature.Queries
         public int Page { get; set; }
         public int PageSize { get; set; }
         public int TotalRecord { get; set; }
-    }
-    public static class Helper
-    {
-        public static IPagedList<T> PageResultAsync<T>(this IQueryable<T> query, int page, int pageSize)
-        {
-            var result = query.ToPagedList(page, pageSize);
-            return result;
-        }
     }
     public class GetDataHandler : IRequestHandler<GetSearchRequest, IPagedList<TableDTOs>>
     {

@@ -29,7 +29,7 @@
 
         <div class="col-md-6">
             <label for="inputEmail4" class="form-label">Agent CEA NO</label>
-            <input class="form-control mygroup" asp-for="AgentCEANO">
+            <input class="form-control mygroup" asp-for="AgentCEANO" value="207607465H">
             <span asp-validation-for="AgentCEANO" class="text-danger"></span>
         </div>
 
@@ -45,7 +45,7 @@
 
         <div class="col-md-6 mt-0">
             <label for="inputEmail4" class="form-label">From</label>
-            <input type="date" class="form-control"  value="2016-03-11" asp-for="From">
+            <input type="date" class="form-control" value="2016-03-11" asp-for="From">
             <span asp-validation-for="From" class="text-danger"></span>
         </div>
 
@@ -124,10 +124,9 @@
             },
         });
 
-
         function SearchClick() {
             if ($("#form").valid()) {
-                var formData = $("#form").serialize();
+                var formData = $("#form").serializeArray();
                 $.ajax({
                     url: '/TransData/Search',
                     method: "Post",
@@ -146,33 +145,41 @@
         $(document).on('click', '.pagination a', function (event) {
             event.preventDefault();
             let page = $(this).attr('href');
-            let formData = $("#form").serialize();
-
-            console.log(page);
-
-            formData.page= page;
-            console.log(formData);
-
-
-            let searchData = {
-                op:  formData.op,
-                Page: page
-            };
-            console.log(searchData);
+            let formData = $("#form").serializeArray();
+            formData.push({ name: "Page", value: page });
             $.ajax({
                 method: "POST",
                 url: '/TransData/Search',
-                data: {
-                    Page : page,
-                    Search: SearchData,
-                },
-                success: function (data) {
-                    //$('.paged-data-container').html(data);
+                data: $.param(formData),
+                success: function (result) {
+                    $('#partialViewContainer').empty();
+                    $('#partialViewContainer').html(result);
                 },
                 error: function (xhr, status, error) {
                     console.log(error);
                 }
             });
         });
+
+        //function Export() {
+
+        //    let page = document.querySelector(".active").value;
+        //    let formData = $("#form").serializeArray(); 
+        //    formData.push({ name: "Page", value: page });
+        //    console.log(formData);
+        //    $.ajax({
+        //        url: '/TransData/Excel',
+        //        method: "Post",
+        //        data: formData,
+        //        success: function (result) {
+        //            $('#partialViewContainer').empty();
+        //            $('#partialViewContainer').html(result);
+        //        },
+        //        error: function (response) {
+        //            console.log(response.responseText);
+        //        },
+        //    });
+        //}
+
     </script>
 }
