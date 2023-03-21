@@ -53,16 +53,6 @@ namespace ngay8.Controllers
             //return BadRequest("LỖI");
             return View("Index");
         }
-        public class A
-        {
-            public string name { get; set; }
-            public B giatri { get; set; }
-        }
-        public class B
-        {
-            public int a { get; set; }
-            public int b { get; set; }
-        }
         [HttpPost]
         public async Task<IActionResult> Excel([FromBody] SearchVM search)
         {

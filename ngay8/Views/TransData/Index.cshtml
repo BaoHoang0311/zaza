@@ -145,12 +145,15 @@
             event.preventDefault();
 
             let page = $(this).attr('href');
+            let pageSizeSelected = $('#dropdown').val();
+
             //let formData = $("#form").serializeArray();
             //formData.push({ name: "Page", value: page });
 
             let data = {};
             let formData = $("#form").serializeArray().map(function (x) { data[x.name] = x.value == "" ? null : x.value; });;
             data.Page = page;
+            data.PageSize = pageSizeSelected;
 
             $.ajax({
                 method: "POST",
@@ -160,6 +163,7 @@
                 success: function (result) {
                     $('#partialViewContainer').empty();
                     $('#partialViewContainer').html(result);
+                    $('select').val(pageSizeSelected);
                 },
                 error: function (xhr, status, error) {
                     console.log(error);
@@ -187,6 +191,7 @@
         //}
 
         // Handle Export
+
         $(document).on("click", "#handleExport", function () {
             let page = document.querySelector(".active").value;
             let data = {};
@@ -231,6 +236,31 @@
             xhttp.responseType = 'blob';
             xhttp.send(JSON.stringify(data));
         };
+
+
+        $(document).on('change', '#dropdown', function (event) {
+
+            let pageSizeSelected = $('#dropdown').val();
+            alert(pageSizeSelected);
+            let data = {};
+            let formData = $("#form").serializeArray().map(function (x) { data[x.name] = x.value == "" ? null : x.value; });;
+            data.Page = 1;
+            data.PageSize = pageSizeSelected;
+            console.log(data);
+            $.ajax({
+                method: "POST",
+                url: '/TransData/Search',
+                data: data,
+                success: function (result) {
+                    $('#partialViewContainer').empty();
+                    $('#partialViewContainer').html(result);
+                    $('select').val(pageSizeSelected);
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        });
 
     </script>
 }
