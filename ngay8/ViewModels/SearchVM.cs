@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using ngay8.Helper;
 using System.ComponentModel.DataAnnotations;
-using System.Reflection;
 
-namespace ngay8.Models
+namespace ngay8.ViewModels
 {
     public partial class SearchVM
     {

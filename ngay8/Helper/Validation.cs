@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
-namespace ngay8.Models
+namespace ngay8.Helper
 {
     public class OneRequired : ValidationAttribute
     {
@@ -17,7 +17,7 @@ namespace ngay8.Models
         }
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            PropertyInfo? otherPropertyInfo = validationContext.ObjectInstance.GetType().GetProperty(otherProperty);
+            PropertyInfo otherPropertyInfo = validationContext.ObjectInstance.GetType().GetProperty(otherProperty);
 
             var otherPropertyValue = otherPropertyInfo?.GetValue(validationContext.ObjectInstance, null);
 
@@ -25,7 +25,7 @@ namespace ngay8.Models
             {
                 return new ValidationResult(string.Format("Please fill at least 1 of these fields."));
             }
-            else if ( !string.IsNullOrEmpty(otherPropertyValue?.ToString()) && !string.IsNullOrEmpty(value?.ToString()))
+            else if (!string.IsNullOrEmpty(otherPropertyValue?.ToString()) && !string.IsNullOrEmpty(value?.ToString()))
             {
                 return ValidationResult.Success;
             }
@@ -43,7 +43,7 @@ namespace ngay8.Models
         {
             if (value is DateTime day)
             {
-                return day > new DateTime(2016, 01, 01);
+                return day >= new DateTime(2016, 01, 01);
             }
             return false;
         }
@@ -62,7 +62,7 @@ namespace ngay8.Models
         }
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            PropertyInfo? otherPropertyInfo = validationContext.ObjectInstance.GetType().GetProperty(otherProperty);
+            PropertyInfo otherPropertyInfo = validationContext.ObjectInstance.GetType().GetProperty(otherProperty);
 
             var otherPropertyValue = otherPropertyInfo?.GetValue(validationContext.ObjectInstance, null);
 

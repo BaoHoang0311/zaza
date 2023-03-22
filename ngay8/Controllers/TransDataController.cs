@@ -1,15 +1,9 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using ngay8.Models;
-using OfficeOpenXml.Table;
-using OfficeOpenXml;
-using Service.Application.TransDataFeature.Queries;
-using Service.Application.DTOs;
-using System.Data;
-using System.Reflection;
-using OfficeOpenXml.Attributes;
+using ngay8.ViewModels;
 using Service.Application.Helper;
+using Service.Application.TransDataFeature.Queries;
 
 namespace ngay8.Controllers
 {
@@ -50,8 +44,8 @@ namespace ngay8.Controllers
                 return PartialView("~/Views/TransData/_SearchResultPartialView.cshtml", resSearch);
 
             }
-            //return BadRequest("LỖI");
-            return View("Index");
+            return BadRequest("LỖI");
+            //return View("Index");
         }
         [HttpPost]
         public async Task<IActionResult> Excel([FromBody] SearchVM search)

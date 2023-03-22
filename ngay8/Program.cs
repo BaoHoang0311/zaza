@@ -1,9 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Service.Application.ProductFeatures.Commands;
 using Service.Domain.Models;
-using System.Reflection;
-using static Service.Application.ProductFeatures.Commands.GetProductByIdQuery;
 
 namespace ngay8
 {
@@ -19,7 +15,7 @@ namespace ngay8
             //builder.Services.AddAutoMapper(typeof(Program));
 
             builder.Services.AddDbContext<AestrainingContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaulConnectionString")));
-
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.AddApplicationServices();
 
             var app = builder.Build();
@@ -41,7 +37,7 @@ namespace ngay8
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=TransData}/{action=Index}/{id?}");
+                pattern: "{controller=Graph}/{action=Index}/{id?}");
 
             app.Run();
         }

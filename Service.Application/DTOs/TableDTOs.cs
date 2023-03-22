@@ -1,6 +1,5 @@
 ﻿using OfficeOpenXml.Attributes;
 using Service.Domain.Models;
-using System.ComponentModel.DataAnnotations;
 
 namespace Service.Application.DTOs
 {
@@ -18,7 +17,6 @@ namespace Service.Application.DTOs
         public string? CEANo { get; set; }
         public double? GrossValue { get; set; }
         public double? NetValue { get; set; }
-        [DataType(DataType.DateTime)]
         public DateTime? Date { get; set; }
         public string? ProjectNane { get; set; }
         public double? TransactedPrice { get; set; }

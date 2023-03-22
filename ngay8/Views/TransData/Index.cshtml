@@ -1,15 +1,10 @@
-﻿@model SearchVM
+﻿@namespace ngay8.ViewModels
+@model SearchVM
 
 @{
     ViewData["Title"] = "Multi Search";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<style>
-    .error {
-        color: #F00;
-        background-color: #FFF;
-    }
-</style>
 
 <div>
     <form id="form" class="row g-3" method="post">
@@ -241,7 +236,6 @@
         $(document).on('change', '#dropdown', function (event) {
 
             let pageSizeSelected = $('#dropdown').val();
-            alert(pageSizeSelected);
             let data = {};
             let formData = $("#form").serializeArray().map(function (x) { data[x.name] = x.value == "" ? null : x.value; });;
             data.Page = 1;
