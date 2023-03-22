@@ -124,7 +124,6 @@
             },
         });
 
-
         function Report() {
             if ($("#form").valid()) {
                 var formData = $("#form").serializeArray();
@@ -133,9 +132,6 @@
                     method: "Post",
                     data: formData,
                     success: function (result) {
-                        //$('#graphPartialView').empty();
-                        //$('#graphPartialView').html(result);
-
                         let grData = DataGraph(JSON.parse(JSON.stringify(result)));
                         console.log(grData);
                         drawColChart(grData);
@@ -147,11 +143,13 @@
                 });
             }
         };
+
         function DataGraph(result) {
             let grData = [];
             result.forEach(x => grData.push({ name: `${x.month}-${x.year}`, grossValue: x.grossValue, netValue: x.netValue }));
             return grData;
         };
+
         function drawColChart(data) {
             Highcharts.chart('chart', {
                 chart: {
@@ -188,7 +186,6 @@
                         name: 'Net Value',
                         data: data.map(item => item.netValue)
                     }
-
                 ]
             });
         }
