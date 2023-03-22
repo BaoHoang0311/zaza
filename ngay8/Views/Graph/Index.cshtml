@@ -51,9 +51,7 @@
             <button type="button" class="btn btn-primary" id="Search" onclick="Report()">Report</button>
         </form>
     </div>
-
-    <div id="graphPartialView"></div>
-
+    <div class="col-12 col-xl-8" id="graphPartialView"></div>
 </div>
 
 @section Scripts {
@@ -135,14 +133,49 @@
                     success: function (result) {
                         $('#graphPartialView').empty();
                         $('#graphPartialView').html(result);
+                        drawPieChart();
                     },
+                    //success: OnSuccess_,
                     error: function (response) {
                         $('#form').empty();
-                        alert("errodasdsar");
                         console.log(response.responseText);
                     },
                 });
             }
+        }
+
+        function drawColChart() {
+            Highcharts.chart('bao_chart', {
+                data: {
+                    table: 'datatable'
+                },
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'Báo cáo'
+                },
+                subtitle: {
+                    text:
+                        'Source: <a href="https://www.ssb.no/en/statbank/table/04231" target="_blank">SSB</a>'
+                },
+                xAxis: {
+                    type: 'category'
+                },
+                yAxis: {
+                    allowDecimals: false,
+                    title: {
+                        text: 'Amount'
+                    }
+                },
+                tooltip: {
+                    formatter: function () {
+                        return '<b>' + this.series.name + '</b><br/>' +
+                            this.point.y + ' ' + this.point.name.toLowerCase();
+                    }
+                }
+            });
+
         }
     </script>
 

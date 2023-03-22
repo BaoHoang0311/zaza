@@ -1,98 +1,16 @@
 ﻿@model List<GraphData>
-
-<div class="col-12 col-xl-8">
-    <figure class="highcharts-figure">
-        <div id="bao_chart"></div>
-        <table id="datatable">
-            <thead>
-                <tr>
-                    <th>Year</th>
-                    <th>Gross</th>
-                    <th>Value</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th>2016</th>
-                    <td>30386</td>
-                    <td>28504</td>
-                </tr>
-                <tr>
-                    <th>2017</th>
-                    <td>29173</td>
-                    <td>27460</td>
-                </tr>
-                <tr>
-                    <th>2018</th>
-                    <td>28430</td>
-                    <td>26690</td>
-                </tr>
-                <tr>
-                    <th>2019</th>
-                    <td>28042</td>
-                    <td>26453</td>
-                </tr>
-                <tr>
-                    <th>2020</th>
-                    <td>27063</td>
-                    <td>25916</td>
-                </tr>
-                <tr>
-                    <th>2021</th>
-                    <td>28684</td>
-                    <td>50000</td>
-                </tr>
-            </tbody>
-        </table>
-    </figure>
-</div>
-
-
-@section Scripts {
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/modules/data.js"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
-
-    <script>
-        Highcharts.chart('container', {
-            data: {
-                table: 'datatable'
-            },
-            chart: {
-                type: 'column'
-            },
-            title: {
-                text: 'Live births in Norway'
-            },
-            subtitle: {
-                text:
-                    'Source: <a href="https://www.ssb.no/en/statbank/table/04231" target="_blank">SSB</a>'
-            },
-            xAxis: {
-                type: 'category'
-            },
-            yAxis: {
-                allowDecimals: false,
-                title: {
-                    text: 'Amount'
-                }
-            },
-            tooltip: {
-                formatter: function () {
-                    return '<b>' + this.series.name + '</b><br/>' +
-                        this.point.y + ' ' + this.point.name.toLowerCase();
-                }
-            }
-        });
-
-    </script>
-
-}
-
-
-@*            
-    @if (Model != null)
+<figure class="highcharts-figure">
+    <div id="bao_chart"></div>
+    <table id="datatable">
+        <thead>
+            <tr>
+                <th>Year</th>
+                <th>Gross Value</th>
+                <th>Net Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if(Model != null)
             {
                 @foreach (var item in Model)
                 {
@@ -103,5 +21,35 @@
                     </tr>
                 }
             }
-*@
 
+
+
+        </tbody>
+    </table>
+</figure>
+
+@*<tr>
+    <th>2017</th>
+    <td>29173</td>
+    <td>27460</td>
+</tr>
+<tr>
+    <th>2018</th>
+    <td>28430</td>
+    <td>26690</td>
+</tr>
+<tr>
+    <th>2019</th>
+    <td>28042</td>
+    <td>26453</td>
+</tr>
+<tr>
+    <th>2020</th>
+    <td>27063</td>
+    <td>25916</td>
+</tr>
+<tr>
+    <th>2021</th>
+    <td>28684</td>
+    <td>6300</td>
+</tr>*@

@@ -37,18 +37,9 @@ namespace ngay8.Controllers
                 };
 
                 var resSearch = await _mediator.Send(getSearchRequest);
-                //var graphData = _mapper.Map<List<GraphData>>(resSearch.ToList());
-                var graphData = new List<GraphData>() {
-                    new GraphData() { Year= 2016,GrossValue = 29173,NetValue = 29173 },
-                    new GraphData() { Year= 2017,GrossValue = 29173,NetValue = 29173 },
-                    new GraphData() { Year= 2018,GrossValue = 29173,NetValue = 29173 },
-                    new GraphData() { Year= 2019,GrossValue = 29173,NetValue = 29173 },
-                    new GraphData() { Year= 2020,GrossValue = 29173,NetValue = 29173},
-                    };
-                //return PartialView("~/Views/Graph/_GraphPartialView.cshtml", graphData);
-                //return PartialView("~/Views/Graph/_GraphPartialView.cshtml");
-                return RedirectToAction("Index", "Home");
+                var graphData = _mapper.Map<List<GraphData>>(resSearch.ToList());
 
+                return PartialView("~/Views/Graph/_GraphPartialView.cshtml", graphData);
             }
             return BadRequest("LỖI");
             //return View();
