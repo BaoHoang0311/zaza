@@ -51,7 +51,11 @@
             <button type="button" class="btn btn-primary" id="Search" onclick="Report()">Report</button>
         </form>
     </div>
-    <div class="col-12 col-xl-8" id="graphPartialView"></div>
+    <div class="col-12 col-xl-8" id="graphPartialView">
+        <figure class="highcharts-figure">
+            <div id="chart"></div>
+        </figure>
+    </div>
 </div>
 
 @section Scripts {
@@ -120,35 +124,36 @@
             },
         });
 
+
         function Report() {
             if ($("#form").valid()) {
                 var formData = $("#form").serializeArray();
-
-                console.log(formData);
-
                 $.ajax({
                     url: '/Graph/Report',
                     method: "Post",
                     data: formData,
                     success: function (result) {
-                        $('#graphPartialView').empty();
-                        $('#graphPartialView').html(result);
-                        drawPieChart();
+                        //$('#graphPartialView').empty();
+                        //$('#graphPartialView').html(result);
+
+                        let grData = DataGraph(JSON.parse(JSON.stringify(result)));
+                        console.log(grData);
+                        drawColChart(grData);
                     },
-                    //success: OnSuccess_,
                     error: function (response) {
                         $('#form').empty();
                         console.log(response.responseText);
                     },
                 });
             }
-        }
-
-        function drawColChart() {
-            Highcharts.chart('bao_chart', {
-                data: {
-                    table: 'datatable'
-                },
+        };
+        function DataGraph(result) {
+            let grData = [];
+            result.forEach(x => grData.push({ name: `${x.month}-${x.year}`, grossValue: x.grossValue, netValue: x.netValue }));
+            return grData;
+        };
+        function drawColChart(data) {
+            Highcharts.chart('chart', {
                 chart: {
                     type: 'column'
                 },
@@ -160,22 +165,32 @@
                         'Source: <a href="https://www.ssb.no/en/statbank/table/04231" target="_blank">SSB</a>'
                 },
                 xAxis: {
-                    type: 'category'
+                    categories: data.map(item => item.name)
                 },
                 yAxis: {
-                    allowDecimals: false,
                     title: {
-                        text: 'Amount'
+                        text: 'Value'
                     }
                 },
                 tooltip: {
                     formatter: function () {
-                        return '<b>' + this.series.name + '</b><br/>' +
-                            this.point.y + ' ' + this.point.name.toLowerCase();
+                        console.log(this);
+                        let str =this.colorIndex == 0 ? `Gross Value` : `Net Value`;
+                        return ` <b>${this.key}</b><br/>${str}: ${this.point.y}`;
                     }
-                }
-            });
+                },
+                series: [
+                    {
+                        name: 'Gross Value',
+                        data: data.map(item => item.grossValue)
+                    },
+                    {
+                        name: 'Net Value',
+                        data: data.map(item => item.netValue)
+                    }
 
+                ]
+            });
         }
     </script>
 

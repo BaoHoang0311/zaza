@@ -11,7 +11,8 @@ namespace ngay8.Mapper
             CreateMap<TableDTOs, GraphData>()
                 .ForMember(dest => dest.GrossValue, opt => opt.MapFrom(src => src.GrossValue))
                 .ForMember(dest => dest.NetValue, opt => opt.MapFrom(src => src.NetValue))
-                .ForMember(dest => dest.Year, opt => opt.MapFrom(src => src.Date.Value.Year));
+                .ForMember(dest => dest.Year, opt => opt.MapFrom(src => src.Date.Value.Year))
+                .ForMember(dest => dest.Month, opt => opt.MapFrom(src => src.Date.Value.Month));
         }
     }
 }

@@ -104,7 +104,7 @@ namespace Service.Application.TransDataFeature.Queries
             }
             else
             {
-                resTable = tableDto.AsQueryable().ExcelAsync();
+                resTable = tableDto.AsQueryable().Take(100).ExcelAsync();
             }
             return resTable;
         }
