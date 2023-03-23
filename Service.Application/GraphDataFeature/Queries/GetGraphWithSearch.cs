@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Service.Application.DTOs;
 using Service.Domain.Models;
@@ -59,8 +60,18 @@ namespace Service.Application.GraphDataFeature.Queries
                     }).OrderBy(m => m.Date).ToListAsync();
             }
 
+            var parameter = new List<SqlParameter>()
+            {
+                new SqlParameter("@op", 1),
+                new SqlParameter("@AgentCEANO", "207607465H"),
+                new SqlParameter("@AgentName",""),
+                new SqlParameter("@From", "01-jan-2017"),
+                new SqlParameter("@To", "31-jan-2017")
+            };
 
-            //var zzz = _context.TransactionGcedatas.FromSql($"GetGraph {keySearch.op} {keySearch.AgentName} {keySearch.AgentCEANO} {}").ToList();
+            //var zzz = await _context.Database
+            //         .ExecuteSqlRawAsync(@"exec GetGraph @op, @AgentCEANO, @AgentName, @From, @To", parameter.ToArray());
+
 
             return tableDto;
         }

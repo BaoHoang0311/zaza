@@ -42,8 +42,7 @@ namespace ngay8.Controllers
                 Year = a.Key.Year,
                 GrossValue = Math.Round(a.Sum(b => b.GrossValue), 0),
                 NetValue = Math.Round(a.Sum(c => c.NetValue), 0)
-            }).ToList();
-
+            }).Take(5).ToList();
 
             if (dataCol == null || dataCol.Count() == 0) return Json(new { status = "fail" });
             return Json(new { status = "success", data = dataCol });
