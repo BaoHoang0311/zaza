@@ -39,13 +39,13 @@
 
             <div class="col-md-6 mt-0">
                 <label for="inputEmail4" class="form-label">From</label>
-                <input type="month" class="form-control" value="2016-01" asp-for="From">
+                <input type="month" class="form-control" asp-for="From">
                 <span asp-validation-for="From" class="text-danger"></span>
             </div>
 
             <div class="col-md-6 mt-0">
                 <label for="inputEmail4" class="form-label">To</label>
-                <input type="month" class="form-control" value="2023-02" asp-for="To">
+                <input type="month" class="form-control" asp-for="To">
                 <span asp-validation-for="To" class="text-danger"></span>
             </div>
             <button type="button" class="btn btn-primary" id="Search" onclick="Report()">Report</button>
@@ -79,10 +79,13 @@
         );
         $.validator.addMethod("dateTo",
             function (value, element) {
-                let z = document.querySelector('input[name="From"]').value;
-                let preD = new Date(z.split('-')[0], z.split('-')[1] - 1, 0);
-                let d = new Date(value);
-                r = (d <= new Date() && d >= preD);
+                //Day From
+                let ipFromDay = document.querySelector('input[name="From"]').value;
+                let fromDay = new Date(ipFromDay.split('-')[0], ipFromDay.split('-')[1] - 1, 1);
+
+                let toDay = new Date(value.split('-')[0], Number(value.split('-')[1]) , 0);
+
+                r = (toDay <= new Date() && toDay >= fromDay);
                 return r; // FALSE => THÔNG BÁO
             },
             "Date <= DateNow , Date >= preDay"
@@ -126,14 +129,20 @@
 
         function Report() {
             if ($("#form").valid()) {
-                var formData = $("#form").serializeArray();
+
+                let valueToDay = document.querySelector('input[name="To"]').value;
+                let toDay = new Date(valueToDay.split('-')[0], Number(valueToDay.split('-')[1]), 0);
+
+                let data = {};
+                let formData = $("#form").serializeArray().map(function (x) { data[x.name] = x.value == "" ? null : x.value; });;
+                data.To = toDay.toDateString();
+
                 $.ajax({
                     url: '/Graph/Report',
                     method: "Post",
-                    data: formData,
+                    data: data,
                     success: function (result) {
                         let grData = DataGraph(JSON.parse(JSON.stringify(result)));
-                        console.log(grData);
                         drawColChart(grData);
                     },
                     error: function (response) {

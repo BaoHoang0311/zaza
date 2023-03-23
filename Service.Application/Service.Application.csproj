@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="GraphDataFeature\Commands\" />
     <Folder Include="TransDataFeature\Commands\" />
   </ItemGroup>
 

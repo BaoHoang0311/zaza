@@ -98,7 +98,7 @@ namespace Service.Application.TransDataFeature.Queries
                     }
                 }
             }
-            if(keySearch.Page != null)
+            if (keySearch.Page != null)
             {
                 resTable = tableDto.AsQueryable().PageResultAsync(keySearch.Page.Value, keySearch.PageSize);
             }
