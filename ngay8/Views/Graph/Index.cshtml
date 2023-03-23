@@ -39,13 +39,13 @@
 
             <div class="col-md-6 mt-0">
                 <label for="inputEmail4" class="form-label">From</label>
-                <input type="month" class="form-control" value="2017-01" asp-for="From">
+                <input type="month" class="form-control" value="2019-01" asp-for="From">
                 <span asp-validation-for="From" class="text-danger"></span>
             </div>
 
             <div class="col-md-6 mt-0">
                 <label for="inputEmail4" class="form-label">To</label>
-                <input type="month" class="form-control" value="2017-02" asp-for="To">
+                <input type="month" class="form-control" value="2019-01" asp-for="To">
                 <span asp-validation-for="To" class="text-danger"></span>
             </div>
             <button type="button" class="btn btn-primary" id="Search" onclick="Report()">Report</button>
@@ -140,7 +140,8 @@
                 data.To = toDay.toDateString();
 
                 $.ajax({
-                    url: '/Graph/Report',
+                    //url: '/Graph/Report',
+                    url: '/Graph/ReportProcedure',
                     method: "Post",
                     data: data,
                     success: function (result) {

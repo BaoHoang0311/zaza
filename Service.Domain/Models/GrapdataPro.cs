@@ -1,9 +1,9 @@
-﻿namespace ngay8.Models
+﻿namespace Service.Domain.Models
 {
-    public class GraphData
+    public class GraphDataPro
     {
-        public int Month { get; set; }
         public int Year { get; set; }
+        public int Month { get; set; }
         public double GrossValue { get; set; }
         public double NetValue { get; set; }
     }
