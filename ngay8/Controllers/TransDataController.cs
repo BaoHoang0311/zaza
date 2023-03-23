@@ -32,11 +32,10 @@ namespace ngay8.Controllers
                     op = search.op,
                     AgentName = search.AgentName,
                     AgentCEANO = search.AgentCEANO,
-                    From = search.From.Value,
-                    To = search.To,
+                    From = search.From.Value + new TimeSpan(00, 00, 01),
+                    To = search.To.Value + new TimeSpan(23, 59, 59),
                     Page = search.Page,
                     PageSize = search.PageSize.Value,
-
                 };
 
                 var resSearch = await _mediator.Send(getSearchRequest);
@@ -45,7 +44,6 @@ namespace ngay8.Controllers
 
             }
             return BadRequest("LỖI");
-            //return View("Index");
         }
         [HttpPost]
         public async Task<IActionResult> Excel([FromBody] SearchVM search)
@@ -54,11 +52,11 @@ namespace ngay8.Controllers
             {
                 var getSearchRequest = new GetSearchRequest()
                 {
-                    op = 1,
+                    op = search.op,
                     AgentCEANO = search.AgentCEANO,
                     AgentName = search.AgentName,
-                    From = search.From,
-                    To = search.To,
+                    From = search.From.Value + new TimeSpan(00, 00, 01),
+                    To = search.To.Value + new TimeSpan(23, 59, 59),
                     Page = null,
                 };
                 var resSearch = await _mediator.Send(getSearchRequest);

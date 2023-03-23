@@ -51,13 +51,15 @@
             <button type="button" class="btn btn-primary" id="Search" onclick="Report()">Report</button>
         </form>
     </div>
-    <div class="col-12 col-xl-8" id="graphPartialView">
-        <figure class="highcharts-figure">
-            <div id="chart"></div>
-        </figure>
+    <div class="col-12 col-xl-8">
+        <div id="abc"></div>
+        <div>
+            <figure class="highcharts-figure">
+                <div id="chart"></div>
+            </figure>
+        </div>
     </div>
 </div>
-
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
@@ -83,7 +85,7 @@
                 let ipFromDay = document.querySelector('input[name="From"]').value;
                 let fromDay = new Date(ipFromDay.split('-')[0], ipFromDay.split('-')[1] - 1, 1);
 
-                let toDay = new Date(value.split('-')[0], Number(value.split('-')[1]) , 0);
+                let toDay = new Date(value.split('-')[0], Number(value.split('-')[1]), 0, 11, 59, 59);
 
                 r = (toDay <= new Date() && toDay >= fromDay);
                 return r; // FALSE => THÔNG BÁO
@@ -131,10 +133,10 @@
             if ($("#form").valid()) {
 
                 let valueToDay = document.querySelector('input[name="To"]').value;
-                let toDay = new Date(valueToDay.split('-')[0], Number(valueToDay.split('-')[1]), 0);
+                let toDay = new Date(valueToDay.split('-')[0], Number(valueToDay.split('-')[1]), 0, 23, 59, 59);
 
                 let data = {};
-                let formData = $("#form").serializeArray().map(function (x) { data[x.name] = x.value == "" ? null : x.value; });;
+                let formData = $("#form").serializeArray().map(function (x) { data[x.name] = x.value == "" ? null : x.value; });
                 data.To = toDay.toDateString();
 
                 $.ajax({
@@ -142,8 +144,17 @@
                     method: "Post",
                     data: data,
                     success: function (result) {
-                        let grData = DataGraph(JSON.parse(JSON.stringify(result)));
-                        drawColChart(grData);
+                        if (result.status != `success`) {
+                            console.log(`rong`);
+                            $('#abc').html("data rỗng");
+                            $('#chart').empty();
+                        }
+                        else {
+                            $('#abc').empty();
+                            let grData = DataGraph(JSON.parse(JSON.stringify(result.data)));
+                            drawColChart(grData);
+                        }
+
                     },
                     error: function (response) {
                         $('#form').empty();
@@ -181,7 +192,6 @@
                 },
                 tooltip: {
                     formatter: function () {
-                        console.log(this);
                         let str = this.colorIndex == 0 ? `Gross Value` : `Net Value`;
                         return ` <b>${this.key}</b><br/>${str}: ${this.point.y}`;
                     }
@@ -201,5 +211,5 @@
     </script>
 
 
-}
+    }
 

@@ -58,6 +58,10 @@ namespace Service.Application.GraphDataFeature.Queries
                         CEANo = item1.AgtCeano,
                     }).OrderBy(m => m.Date).ToListAsync();
             }
+
+
+            //var zzz = _context.TransactionGcedatas.FromSql($"GetGraph {keySearch.op} {keySearch.AgentName} {keySearch.AgentCEANO} {}").ToList();
+
             return tableDto;
         }
     }

@@ -21,16 +21,16 @@ namespace ngay8.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<List<GraphData>> Report(SearchVM search)
+        public async Task<JsonResult> Report(SearchVM search)
         {
-            if (!ModelState.IsValid) return null;
+            if (!ModelState.IsValid) return Json(new { status = "fail" });
             var getGraphRequest = new GetGraphRequest()
             {
                 op = search.op,
                 AgentName = search.AgentName,
                 AgentCEANO = search.AgentCEANO,
-                From = search.From.Value,
-                To = search.To,
+                From = search.From.Value + new TimeSpan(00, 00, 02),
+                To = search.To.Value + new TimeSpan(23, 59, 59),
             };
 
             var resSearch = await _mediator.Send(getGraphRequest);
@@ -44,7 +44,10 @@ namespace ngay8.Controllers
                 NetValue = Math.Round(a.Sum(c => c.NetValue), 0)
             }).ToList();
 
-            return dataCol;
+
+            if (dataCol == null || dataCol.Count() == 0) return Json(new { status = "fail" });
+            return Json(new { status = "success", data = dataCol });
+
         }
     }
 }

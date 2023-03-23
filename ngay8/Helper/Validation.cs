@@ -65,9 +65,9 @@ namespace ngay8.Helper
             PropertyInfo otherPropertyInfo = validationContext.ObjectInstance.GetType().GetProperty(otherProperty);
 
             var otherPropertyValue = otherPropertyInfo?.GetValue(validationContext.ObjectInstance, null);
-
             if (otherPropertyValue is DateTime o1 && value is DateTime o2 && o1 == o2)
             {
+                //o2 += new TimeSpan(23, 59, 59);
                 return new ValidationResult(string.Format("Property '{0}' nam bang nhau.", otherProperty));
             }
             return ValidationResult.Success;
