@@ -64,6 +64,7 @@ namespace ngay8.Controllers
 
             var graphDataPro = await _mediator.Send(getGraphRequest);
 
+            if (graphDataPro == null) return Json(new { status = "fail" });
             var dataCol = graphDataPro.GroupBy(x => new { x.Month, x.Year })
                 .Select(a => new GraphDataPro
                 {

@@ -22,7 +22,7 @@ public partial class AestrainingContext : DbContext
     public virtual DbSet<TransactionGcrdata> TransactionGcrdatas { get; set; }
 
     // Procedure
-    public virtual DbSet<GraphDataPro> graphData { get; set; }
+    //public virtual DbSet<GraphDataPro> graphData { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -127,7 +127,7 @@ public partial class AestrainingContext : DbContext
                                         .WithMany(m => m.TransactionGcrdatas)
                                         .HasForeignKey(am => am.TransId);
         // Procedure
-        modelBuilder.Entity<GraphDataPro>().HasNoKey();
+        //modelBuilder.Entity<GraphDataPro>().HasNoKey();
 
         OnModelCreatingPartial(modelBuilder);
     }
