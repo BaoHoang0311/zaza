@@ -29,8 +29,8 @@ namespace Service.Application.GraphDataFeature.Queries
             {
                 var parameter = new List<SqlParameter>()
                 {
-                    new SqlParameter("@op", 1),
-                    new SqlParameter("@AgentCEANO", keySearch.AgentCEANO),
+                    new SqlParameter("@op", keySearch.op),
+                    new SqlParameter("@AgentCEANO", keySearch.AgentCEANO ),
                     new SqlParameter("@AgentName",keySearch.AgentName ?? ""),
                     new SqlParameter("@From", keySearch.From.ToString("dd-MMM-yyyy HH:mm:ss")),
                     new SqlParameter("@To", keySearch.To.ToString("dd-MMM-yyyy HH:mm:ss"))

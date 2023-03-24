@@ -56,21 +56,22 @@ namespace ngay8.Controllers
             var getGraphRequest = new GetGraphWithStoreProcedureRequest()
             {
                 op = search.op,
-                AgentName = search.AgentName,
-                AgentCEANO = search.AgentCEANO,
+                AgentName = search.AgentName ?? "",
+                AgentCEANO = search.AgentCEANO ?? "",
                 From = search.From.Value + new TimeSpan(00, 00, 02),
                 To = search.To.Value + new TimeSpan(23, 59, 59),
             };
 
             var graphDataPro = await _mediator.Send(getGraphRequest);
 
-            var dataCol = graphDataPro.GroupBy(x => new { x.Month, x.Year }).Select(a => new GraphDataPro
-            {
-                Month = a.Key.Month,
-                Year = a.Key.Year,
-                GrossValue = Math.Round(a.Sum(b => b.GrossValue), 0),
-                NetValue = Math.Round(a.Sum(c => c.NetValue), 0)
-            }).ToList();
+            var dataCol = graphDataPro.GroupBy(x => new { x.Month, x.Year })
+                .Select(a => new GraphDataPro
+                {
+                    Month = a.Key.Month,
+                    Year = a.Key.Year,
+                    GrossValue = Math.Round(a.Sum(b => b.GrossValue), 0),
+                    NetValue = Math.Round(a.Sum(c => c.NetValue), 0)
+                }).ToList();
 
             if (dataCol == null || dataCol.Count() == 0) return Json(new { status = "fail" });
             return Json(new { status = "success", data = dataCol });

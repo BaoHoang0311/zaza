@@ -194,7 +194,13 @@
                 tooltip: {
                     formatter: function () {
                         let str = this.colorIndex == 0 ? `Gross Value` : `Net Value`;
-                        return ` <b>${this.key}</b><br/>${str}: ${this.point.y}`;
+
+                        let USDollar = new Intl.NumberFormat('en-US', {
+                            style: 'currency',
+                            currency: 'USD',
+                            minimumFractionDigits: 0
+                        });
+                        return ` <b>${this.key}</b><br/>${str}: ${USDollar.format(this.point.y)}`;
                     }
                 },
                 series: [

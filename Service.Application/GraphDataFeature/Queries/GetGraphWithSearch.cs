@@ -58,9 +58,6 @@ namespace Service.Application.GraphDataFeature.Queries
                         CEANo = item1.AgtCeano,
                     }).OrderBy(m => m.Date).ToListAsync();
             }
-
-
-
             return tableDto;
         }
     }
