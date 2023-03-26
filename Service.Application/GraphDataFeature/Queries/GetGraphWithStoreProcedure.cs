@@ -40,6 +40,7 @@ namespace Service.Application.GraphDataFeature.Queries
                     new SqlParameter("@result",ParameterDirection.Output)
                 };
 
+                // lấy bằng SP nhưng phải dk trong db context
                 //string strStorePro = "exec GetGraph @op, @AgentCEANO, @AgentName, @From, @To";
                 //var result1 = await _context.graphData.FromSqlRaw(strStorePro, parameter.ToArray()).ToListAsync();
                 //var graphData = result1.Select(item1 => new GraphDataPro
@@ -50,6 +51,7 @@ namespace Service.Application.GraphDataFeature.Queries
                 //    NetValue = item1.NetValue
                 //}).ToList();
 
+                // lấy bằng SP KO phải dk trong db context => trả về json
                 var result1 = _context.Database.SqlQuery<string>($"Exec Datafunc1 {parameter[0]},{parameter[1]},{parameter[2]} , {parameter[3]},{parameter[4]}");
                 var s = new StringBuilder();
                 foreach (var item in result1)
