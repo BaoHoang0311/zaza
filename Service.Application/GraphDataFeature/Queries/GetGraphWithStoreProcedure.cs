@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Service.Domain.Models;
+using System.Data;
 using System.Text;
 
 namespace Service.Application.GraphDataFeature.Queries
@@ -35,13 +36,12 @@ namespace Service.Application.GraphDataFeature.Queries
                     new SqlParameter("@AgentCEANO", keySearch.AgentCEANO ),
                     new SqlParameter("@AgentName",keySearch.AgentName ?? ""),
                     new SqlParameter("@From", keySearch.From.ToString("dd-MMM-yyyy HH:mm:ss")),
-                    new SqlParameter("@To", keySearch.To.ToString("dd-MMM-yyyy HH:mm:ss"))
+                    new SqlParameter("@To", keySearch.To.ToString("dd-MMM-yyyy HH:mm:ss")),
+                    new SqlParameter("@result",ParameterDirection.Output)
                 };
 
                 //string strStorePro = "exec GetGraph @op, @AgentCEANO, @AgentName, @From, @To";
-
                 //var result1 = await _context.graphData.FromSqlRaw(strStorePro, parameter.ToArray()).ToListAsync();
-
                 //var graphData = result1.Select(item1 => new GraphDataPro
                 //{
                 //    Month = item1.Month,
@@ -50,8 +50,8 @@ namespace Service.Application.GraphDataFeature.Queries
                 //    NetValue = item1.NetValue
                 //}).ToList();
 
-                var result1 = _context.Database.SqlQuery<string>($"Select dbo.Datafunc( {parameter[0]},{parameter[1]},{parameter[2]} , {parameter[3]},{parameter[4]} )");
-                var s = new StringBuilder(); // 
+                var result1 = _context.Database.SqlQuery<string>($"Exec Datafunc1 {parameter[0]},{parameter[1]},{parameter[2]} , {parameter[3]},{parameter[4]}");
+                var s = new StringBuilder();
                 foreach (var item in result1)
                 {
                     s.Append(item);

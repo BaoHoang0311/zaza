@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using ngay8.Helper;
 using ngay8.Models;
 using ngay8.ViewModels;
 using Service.Application.GraphDataFeature.Queries;
@@ -22,6 +23,11 @@ namespace ngay8.Controllers
         {
             return View();
         }
+        public IActionResult Analytics()
+        {
+            return View();
+        }
+
         [HttpPost]
         public async Task<JsonResult> Report(SearchVM search)
         {
@@ -77,5 +83,24 @@ namespace ngay8.Controllers
             if (dataCol == null || dataCol.Count() == 0) return Json(new { status = "fail" });
             return Json(new { status = "success", data = dataCol });
         }
+        public IActionResult Report()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ExportExcel([FromBody] ClosexmlVM closeXml)
+        {
+            if (!ModelState.IsValid) return Json(new { status = "fail" });
+            var getExcelwithDate = new GetExcelwithDate()
+            {
+                From = closeXml.From.Value + new TimeSpan(00, 00, 02),
+                To = closeXml.To.Value + new TimeSpan(23, 59, 59),
+            };
+            var top10KeyInDate = await _mediator.Send(getExcelwithDate);
+            var exportbyte = top10KeyInDate.ExporttoExcelCloseXML(getExcelwithDate);
+            return File(exportbyte, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
     }
 }
+
+

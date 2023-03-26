@@ -45,10 +45,10 @@
 
         <div class="col-md-6 mt-0">
             <label for="inputEmail4" class="form-label">To</label>
-            <input type="date" class="form-control" value="2022-03-11" asp-for="To">
+            <input type="date" class="form-control" value="2022-03-02" asp-for="To">
             <span asp-validation-for="To" class="text-danger"></span>
         </div>
-        <button type="button" class="btn btn-primary" id="Search" onclick="SearchClick()">Search</button>
+        <button type="button" class="btn btn-primary" id="Search">Search</button>
     </form>
 </div>
 <div id="partialViewContainer"></div>
@@ -115,7 +115,7 @@
             },
         });
 
-        function SearchClick() {
+        $("#Search").click(function () {
             if ($("#form").valid()) {
                 var formData = $("#form").serializeArray();
                 $.ajax({
@@ -133,7 +133,7 @@
                     },
                 });
             }
-        }
+        });
 
         $(document).on('click', '.pagination a', function (event) {
 
@@ -141,9 +141,6 @@
 
             let page = $(this).attr('href');
             let pageSizeSelected = $('#dropdown').val();
-
-            //let formData = $("#form").serializeArray();
-            //formData.push({ name: "Page", value: page });
 
             let data = {};
             let formData = $("#form").serializeArray().map(function (x) { data[x.name] = x.value == "" ? null : x.value; });;
@@ -154,7 +151,6 @@
                 method: "POST",
                 url: '/TransData/Search',
                 data: data,
-                //data: $.param(formData),
                 success: function (result) {
                     $('#partialViewContainer').empty();
                     $('#partialViewContainer').html(result);
@@ -166,27 +162,7 @@
             });
         });
 
-        //function Export() {
-        //    let page = document.querySelector(".active").value;
-        //    let formData = $("#form").serializeArray();
-        //    formData.push({ name: "Page", value: page });
-        //    console.log(formData);
-        //    $.ajax({
-        //        url: '/TransData/Excel',
-        //        method: "Post",
-        //        data: formData,
-        //        success: function (result) {
-        //            $('#partialViewContainer').empty();
-        //            $('#partialViewContainer').html(result);
-        //        },
-        //        error: function (response) {
-        //            console.log(response.responseText);
-        //        },
-        //    });
-        //}
-
-        // Handle Export
-
+         //Handle Export
         $(document).on("click", "#handleExport", function () {
             let page = document.querySelector(".active").value;
             let data = {};
@@ -208,6 +184,7 @@
                         // Trick for making downloadable link
                         a = document.createElement('a');
                         a.id = 'btn-download-' + new Date().getTime();
+                        console.log(xhttp.response);
                         a.href = window.URL.createObjectURL(xhttp.response);
                         a.download = data.fileName;
                         a.style.display = 'none';
@@ -232,9 +209,8 @@
             xhttp.send(JSON.stringify(data));
         };
 
-
+        // Page per size
         $(document).on('change', '#dropdown', function (event) {
-
             let pageSizeSelected = $('#dropdown').val();
             let data = {};
             let formData = $("#form").serializeArray().map(function (x) { data[x.name] = x.value == "" ? null : x.value; });;

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using ngay8.Helper;
 using ngay8.ViewModels;
-using Service.Application.Helper;
 using Service.Application.TransDataFeature.Queries;
 
 namespace ngay8.Controllers
@@ -46,6 +46,7 @@ namespace ngay8.Controllers
             return BadRequest("LỖI");
         }
         [HttpPost]
+
         public async Task<IActionResult> Excel([FromBody] SearchVM search)
         {
             if (ModelState.IsValid)
@@ -63,8 +64,8 @@ namespace ngay8.Controllers
 
                 if (resSearch.Count > 0)
                 {
-                    var exportbytes = resSearch.ToList().ExporttoExcel(search.fileName);
-                    return File(exportbytes, "application/octet-stream");
+                    var exportbytes = resSearch.ToList().ExporttoExcel("abc");
+                    return File(exportbytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "abc");
                 }
                 else
                 {

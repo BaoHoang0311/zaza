@@ -6,9 +6,9 @@
     <title>@ViewData["Title"] - ngay8</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/ngay8.styles.css" asp-append-version="true" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link href="~/css/graph.css" rel="stylesheet" />
+    <link href="~/css/dropdownmenu.css" rel="stylesheet" />
 </head>
 <body>
     <header>
@@ -25,10 +25,18 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Graph" asp-action="Index">Graph</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="TransData" asp-action="Index">Search</a>
+                        </li>
+                        <li class="drop-holder">
+                            <div class="dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Report and analytics
+                                </a>
+                                <ul class="dropdown-menu " aria-labelledby="dropdownMenuLink">
+                                    <li><a class="dropdown-item text-dark" asp-controller="Graph" asp-action="Report">Report</a></li>
+                                    <li><a class="dropdown-item text-dark" asp-controller="Graph" asp-action="Analytics">Analytics</a></li>
+                                </ul>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -41,11 +49,6 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - ngay8 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

@@ -1,0 +1,220 @@
+﻿@namespace ngay8.ViewModels
+@model AnalysicVM
+
+@{
+    ViewData["Title"] = "Report & Analysic";
+}
+<div class="text-center mb-5"><h3>Graph</h3></div>
+
+<div class="row">
+    <div class="col-12 col-xl-4">
+        <form id="form" class="row g-3" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="col-md-4">
+                <input class="form-check-input" type="radio" name="op" value="1" checked>
+                <label class="form-check-label">GCE</label>
+            </div>
+
+            <div class="col-md-4">
+                <input class="form-check-input" type="radio" name="op" value="2">
+                <label class="form-check-label">GCR</label>
+            </div>
+
+            <div class="col-md-6">
+                <label for="inputEmail4" class="form-label">Agent CEA NO</label>
+                <input class="form-control mygroup" asp-for="AgentCEANO" value="207607465H">
+                <span asp-validation-for="AgentCEANO" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label for="inputPassword4" class="form-label">Agent NAME</label>
+                <input class="form-control mygroup" asp-for="AgentName">
+                <span asp-validation-for="AgentName" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-12">
+                <label for="inputEmail4" class="form-label">Submission Date/Received</label>
+            </div>
+
+            <div class="col-md-6 mt-0">
+                <label for="inputEmail4" class="form-label">From</label>
+                <input type="month" class="form-control" value="2019-01" asp-for="From">
+                <span asp-validation-for="From" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mt-0">
+                <label for="inputEmail4" class="form-label">To</label>
+                <input type="month" class="form-control" value="2019-01" asp-for="To">
+                <span asp-validation-for="To" class="text-danger"></span>
+            </div>
+            <button type="button" class="btn btn-primary" id="Graph">Graph</button>
+        </form>
+    </div>
+    <div class="col-12 col-xl-8">
+        <div id="abc"></div>
+        <div>
+            <figure class="highcharts-figure">
+                <div id="chart"></div>
+            </figure>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/additional-methods.min.js"></script>
+
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/data.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+    <script>
+        $.validator.addMethod("dateFrom",
+            function (value, element) {
+                let d = new Date(value);
+                r = (d >= new Date('2016-01-01') && d <= new Date());
+                return r;
+            },
+            "Date >=  2016-01-01 && Date <= Date time now"
+        );
+        $.validator.addMethod("dateTo",
+            function (value, element) {
+                //Day From
+                let ipFromDay = document.querySelector('input[name="From"]').value;
+                let fromDay = new Date(ipFromDay.split('-')[0], ipFromDay.split('-')[1] - 1, 1);
+
+                let toDay = new Date(value.split('-')[0], Number(value.split('-')[1]), 0, 11, 59, 59);
+
+                r = (toDay <= new Date() && toDay >= fromDay);
+                return r; // FALSE => THÔNG BÁO
+            },
+            "Date <= DateNow , Date >= preDay"
+        );
+        $("#form").validate({
+            rules: {
+                AgentCEANO: {
+                    require_from_group: [1, ".mygroup"],
+                    minlength: 3,
+                    maxlength: 100
+                },
+                AgentName: {
+                    require_from_group: [1, ".mygroup"],
+                    minlength: 3,
+                    maxlength: 100
+                },
+                From: {
+                    required: true,
+                    dateFrom: true
+                },
+                To: {
+                    required: true,
+                    dateTo: true
+                }
+            },
+            messages: {
+                AgentCEANO: {
+                    minlength: "Min length = 3",
+                },
+                AgentName: {
+                    minlength: "Min length = 3",
+                },
+                From: {
+                    required: "Vui lòng nhập ở đây",
+                },
+                To: {
+                    required: "Vui lòng nhập ở đây",
+                }
+            },
+        });
+        $("#Graph").click(function () {
+            if ($("#form").valid()) {
+                let valueToDay = document.querySelector('input[name="To"]').value;
+                let toDay = new Date(valueToDay.split('-')[0], valueToDay.split('-')[1], 0);
+                let data = {};
+                let formData = $("#form").serializeArray().map(function (x) { data[x.name] = x.value == "" ? null : x.value; });
+                data.To = toDay.toDateString();
+
+                $.ajax({
+                    //url: '/Graph/Report',
+                    url: '/Graph/ReportProcedure',
+                    method: "Post",
+                    data: data,
+                    success: function (result) {
+                        if (result.status != `success`) {
+                            console.log(`rong`);
+                            $('#abc').html("data rỗng");
+                            $('#chart').empty();
+                        }
+                        else {
+                            $('#abc').empty();
+                            let grData = DataGraph(JSON.parse(JSON.stringify(result.data)));
+                            drawColChart(grData);
+                        }
+                    },
+                    error: function (response) {
+                        $('#form').empty();
+                        console.log(response.responseText);
+                    },
+                });
+            }
+        
+        });
+
+
+        function DataGraph(result) {
+            let grData = [];
+            result.forEach(x => grData.push({ name: `${x.month}-${x.year}`, grossValue: x.grossValue, netValue: x.netValue }));
+            return grData;
+        };
+
+        function drawColChart(data) {
+            Highcharts.chart('chart', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'Báo cáo'
+                },
+                subtitle: {
+                    text:
+                        'Source: <a href="https://www.ssb.no/en/statbank/table/04231" target="_blank">SSB</a>'
+                },
+                xAxis: {
+                    categories: data.map(item => item.name)
+                },
+                yAxis: {
+                    title: {
+                        text: 'Value'
+                    }
+                },
+                tooltip: {
+                    formatter: function () {
+                        let str = this.colorIndex == 0 ? `Gross Value` : `Net Value`;
+
+                        let USDollar = new Intl.NumberFormat('en-US', {
+                            style: 'currency',
+                            currency: 'USD',
+                            minimumFractionDigits: 0
+                        });
+                        return ` <b>${this.key}</b><br/>${str}: ${USDollar.format(this.point.y)}`;
+                    }
+                },
+                series: [
+                    {
+                        name: 'Gross Value',
+                        data: data.map(item => item.grossValue)
+                    },
+                    {
+                        name: 'Net Value',
+                        data: data.map(item => item.netValue)
+                    }
+                ]
+            });
+        }
+    </script>
+    }
+
