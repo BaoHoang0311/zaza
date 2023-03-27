@@ -6,6 +6,7 @@ namespace Service.Application.GraphDataFeature.Queries
 {
     public class ProjectAnalytics
     {
+        public int Index { get; set; }
         public string? ProjectName { get; set; }
         public double TransactedPrice { get; set; }
     }
@@ -26,6 +27,7 @@ namespace Service.Application.GraphDataFeature.Queries
         }
         public async Task<List<ProjectAnalytics>> Handle(GetExcelwithDate keySearch, CancellationToken cancellationToken)
         {
+            int i = 0;
             var transactionDatas = _context.TransactionDatas
                 .Where(x => x.ProjectName != null && x.ProjectName != "" && x.KeyinDate >= keySearch.From && x.KeyinDate <= keySearch.To)
                 ?.GroupBy(x => new { x.ProjectName })
@@ -35,9 +37,9 @@ namespace Service.Application.GraphDataFeature.Queries
                     TransactedPrice = Math.Round(x.Sum(a => a.TransactedPrice), 0)
                 }).OrderByDescending(q => q.TransactedPrice).Take(10).ToList();
 
+            var zz = transactionDatas.Select((x, index) => new ProjectAnalytics { Index = ++index, ProjectName = x.ProjectName, TransactedPrice = x.TransactedPrice }).ToList();
 
-
-            return transactionDatas;
+            return zz;
         }
     }
 }

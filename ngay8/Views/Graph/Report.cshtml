@@ -27,144 +27,98 @@
 </div>
 
 @section Scripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/additional-methods.min.js"></script>
-    <script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/additional-methods.min.js"></script>
+        <script>
 
-        $.validator.addMethod("dateFrom",
-            function (value, element) {
-                let d = new Date(value);
-                r = (d >= new Date('2016-01-01') && d <= new Date());
-                return r;
-            },
-            "Date >=  2016-01-01 && Date <= Date time now"
-        );
-        $.validator.addMethod("dateTo",
-            function (value, element) {
-                //Day From
-                let ipFromDay = document.querySelector('input[name="From"]').value;
-                let fromDay = new Date(ipFromDay.split('-')[0], ipFromDay.split('-')[1] - 1, ipFromDay.split('-')[2]);
-
-                let toDay = new Date(value.split('-')[0], value.split('-')[1], 0, 11, 59, 59);
-                r = (toDay <= new Date() && toDay >= fromDay);
-                return r; // FALSE => THÔNG BÁO
-            },
-            "Date <= DateNow , Date >= preDay"
-        );
-        $("#form").validate({
-            rules: {
-                From: {
-                    required: true,
-                    dateFrom: true
+            $.validator.addMethod("dateFrom",
+                function (value, element) {
+                    let d = new Date(value);
+                    r = (d >= new Date('2016-01-01') && d <= new Date());
+                    return r;
                 },
-                To: {
-                    required: true,
-                    dateTo: true
-                }
-            },
-            messages: {
-                From: {
-                    required: "Vui lòng nhập ở đây",
+                "Date >=  2016-01-01 && Date <= Date time now"
+            );
+            $.validator.addMethod("dateTo",
+                function (value, element) {
+                    //Day From
+                    let ipFromDay = document.querySelector('input[name="From"]').value;
+                    let fromDay = new Date(ipFromDay.split('-')[0], ipFromDay.split('-')[1] - 1, ipFromDay.split('-')[2]);
+
+                    let toDay = new Date(value.split('-')[0], value.split('-')[1], 0, 11, 59, 59);
+                    r = (toDay <= new Date() && toDay >= fromDay);
+                    return r; // FALSE => THÔNG BÁO
                 },
-                To: {
-                    required: "Vui lòng nhập ở đây",
-                }
-            },
-        });
-
-        //Handle Export
-        $(document).on("click", "#handleExport", function () {
-            let data = {};
-            let formData = $("#form").serializeArray().map(function (x) { data[x.name] = x.value == "" ? null : x.value; });;
-            data.fileName = "top10gen";
-            let url = "/Graph/ExportExcel";
-            downloadFile(url, data);
-        });
-
-        function downloadFile(url, data, onSuccess, onError) {
-            console.log(data);
-            // Use XMLHttpRequest instead of Jquery $ajax
-            xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function () {
-                //debugger;
-                let a;
-                if (xhttp.readyState === 4) {
-                    if (xhttp.status === 200) {
-                        // Trick for making downloadable link
-                        a = document.createElement('a');
-                        a.id = 'btn-download-' + new Date().getTime();
-                        console.log(xhttp.response);
-                        a.href = window.URL.createObjectURL(xhttp.response);
-                        a.download = data.fileName;
-                        a.style.display = 'none';
-                        document.body.appendChild(a);
-                        a.click();
-
-                        if (onSuccess != undefined && typeof onSuccess === "function")
-                            onSuccess();
-
-                    } else if (xhttp.status === 500 && onError != undefined && typeof onError === "function") {
-                        onError();
+                "Date <= DateNow , Date >= preDay"
+            );
+            $("#form").validate({
+                rules: {
+                    From: {
+                        required: true,
+                        dateFrom: true
+                    },
+                    To: {
+                        required: true,
+                        dateTo: true
                     }
-                }
+                },
+                messages: {
+                    From: {
+                        required: "Vui lòng nhập ở đây",
+                    },
+                    To: {
+                        required: "Vui lòng nhập ở đây",
+                    }
+                },
+            });
+
+            //Handle Export
+            $(document).on("click", "#handleExport", function () {
+                let data = {};
+                let formData = $("#form").serializeArray().map(function (x) { data[x.name] = x.value == "" ? null : x.value; });;
+                data.fileName = "top10gen";
+                let url = "/Graph/ExportExcel";
+                downloadFile(url, data);
+            });
+
+            function downloadFile(url, data, onSuccess, onError) {
+                console.log(data);
+                // Use XMLHttpRequest instead of Jquery $ajax
+                xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function () {
+                    //debugger;
+                    let a;
+                    if (xhttp.readyState === 4) {
+                        if (xhttp.status === 200) {
+                            // Trick for making downloadable link
+                            a = document.createElement('a');
+                            a.id = 'btn-download-' + new Date().getTime();
+                            console.log(xhttp.response);
+                            a.href = window.URL.createObjectURL(xhttp.response);
+                            a.download = data.fileName;
+                            a.style.display = 'none';
+                            document.body.appendChild(a);
+                            a.click();
+
+                            if (onSuccess != undefined && typeof onSuccess === "function")
+                                onSuccess();
+
+                        } else if (xhttp.status === 500 && onError != undefined && typeof onError === "function") {
+                            onError();
+                        }
+                    }
+                };
+
+                // Post data to URL which handles post request
+                xhttp.open("POST", url);
+                xhttp.setRequestHeader("Content-type", "application/json"); //"multipart/form-data", "application/x-www-form-urlencoded", "application/json"
+
+                // You should set responseType as blob for binary responses
+                xhttp.responseType = 'blob';
+                xhttp.send(JSON.stringify(data));
             };
 
-            // Post data to URL which handles post request
-            xhttp.open("POST", url);
-            xhttp.setRequestHeader("Content-type", "application/json"); //"multipart/form-data", "application/x-www-form-urlencoded", "application/json"
 
-            // You should set responseType as blob for binary responses
-            xhttp.responseType = 'blob';
-            xhttp.send(JSON.stringify(data));
-        };
-
-
-    </script>
+        </script>
     }
-
-
-
-
-@*                        // Handle Export
-        $(document).on("click", "#Export", function () {
-            let data = {};
-            let formData = $("#form").serializeArray().map(function (x) { data[x.name] = x.value == "" ? null : x.value; });;
-            data.fileName = "rental.xlsx";
-            let url = "/Graph/ExportExcel";
-            downloadFile(url, data);
-        });
-        function downloadFile(url, data, onSuccess, onError) {
-            console.log(data);
-            // Use XMLHttpRequest instead of Jquery $ajax
-            xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function () {
-                //debugger;
-                let a;
-                if (xhttp.readyState === 4) {
-                    if (xhttp.status === 200) {
-                        // Trick for making downloadable link
-                        a = document.createElement('a');
-                        a.id = 'btn-download-' + new Date().getTime();
-                        a.href = window.URL.createObjectURL(xhttp.response);
-                        a.download = data.fileName;
-                        a.style.display = 'none';
-                        document.body.appendChild(a);
-                        a.click();
-
-                        if (onSuccess != undefined && typeof onSuccess === "function")
-                            onSuccess();
-
-                    } else if (xhttp.status === 500 && onError != undefined && typeof onError === "function") {
-                        onError();
-                    }
-                }
-            };
-            // Post data to URL which handles post request
-            xhttp.open("POST", url);
-            xhttp.setRequestHeader("Content-type", "application/json"); //"multipart/form-data", "application/x-www-form-urlencoded", "application/json"
-
-            // You should set responseType as blob for binary responses
-            xhttp.responseType = 'blob';
-            xhttp.send(JSON.stringify(data));
-        };*@
