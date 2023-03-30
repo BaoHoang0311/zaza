@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using ngay8.Application;
 using Service.Application.DTOs;
 using Service.Application.Helper;
 using Service.Domain.Models;
@@ -34,6 +35,8 @@ namespace Service.Application.TransDataFeature.Queries
         }
         public async Task<IPagedList<TableDTOs>> Handle(GetSearchRequest keySearch, CancellationToken cancellationToken)
         {
+            var listPaging = await PaginatedList<TransactionData>.CreateAsync(_context.TransactionDatas, 1, 20);
+
             var transactionDatas = _context.TransactionDatas
                                     .Where(x => x.ClosingAgtCeano == keySearch.AgentCEANO || x.ClosingAgtBizName == keySearch.AgentName)
                                     .AsQueryable();
