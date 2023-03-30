@@ -37,29 +37,38 @@ namespace ngay8.Helper
         public static byte[] ExporttoExcelCloseXML<T>(this List<T> table, GetExcelwithDate date)
         {
             var wb = new XLWorkbook();
-            var ws = wb.Worksheets.Add("Collections");
-            string header = $"Top 10 Project by keyIn From: {date.From} To: {date.To}";
-
+            var ws = wb.Worksheets.Add("Top 10 Project");
+            string header = $"Top 10 Project by keyin From: {date.From?.ToString("dd-MMM-yyyy")} To: {date.To?.ToString("dd-MMM-yyyy")}";
 
             ws.Cell(1, 1).Value = header;
-            ws.Range(1, 1, 1, 2).Merge().AddToNamed("Titles");
-            ws.Cell(2, 1).InsertTable(table);
-
-            // Prepare the style for the titles
-            var titlesStyle = wb.Style;
-            titlesStyle.Font.Bold = true;
-            titlesStyle.Font.FontSize = 30;
-            titlesStyle.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-
-            // Set format
-            ws.Column(2).Style.NumberFormat.Format = "#,##0";
-
-            // Format all titles in one shot
-            wb.NamedRanges.NamedRange("Titles").Ranges.Style = titlesStyle;
-
-            ws.Column(1).AdjustToContents();
+            ws.Range(1, 1, 1, 3).Merge().AddToNamed("Titles");
             using MemoryStream stream = new MemoryStream();
-            wb.SaveAs(stream);
+            if (table != null)
+            {
+
+                ws.Cell(2, 1).InsertTable(table);
+                // Set format
+                ws.Column(3).Style.NumberFormat.Format = "$#,##0.00";
+
+                // Prepare the style for the titles
+                var titlesStyle = wb.Style;
+                titlesStyle.Font.Bold = true;
+                titlesStyle.Font.FontSize = 40;
+                titlesStyle.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                // Format all titles in one shot
+                wb.NamedRanges.NamedRange("Titles").Ranges.Style = titlesStyle;
+                ws.Range(2, 1, 2, 3).AddToNamed("headers");
+                var headerStyle = wb.Style;
+                headerStyle.Fill.BackgroundColor = XLColor.LightCyan;
+                headerStyle.Font.Bold = true;
+
+                ws.Column(1).AdjustToContents();
+                wb.SaveAs(stream);
+            }
+            else
+            {
+                wb.SaveAs(stream);
+            }
             return stream.ToArray();
         }
     }
