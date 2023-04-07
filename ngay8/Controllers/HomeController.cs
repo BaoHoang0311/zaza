@@ -13,7 +13,6 @@ namespace ngay8.Controllers
         public PhysicalFileProvider operation;
         public string basePath;
         string root = "wwwroot\\Files";
-
         public HomeController(IHostEnvironment hostingEnvironment)
         {
             this.basePath = hostingEnvironment.ContentRootPath;
@@ -86,12 +85,10 @@ namespace ngay8.Controllers
         }
 
         // gets the image(s) from the given path
-        [Route("GetImage")]
         public IActionResult GetImage(FileManagerDirectoryContent args)
         {
             return this.operation.GetImage(args.Path, args.Id, false, null, null);
         }
-
 
         public IActionResult Index()
         {
