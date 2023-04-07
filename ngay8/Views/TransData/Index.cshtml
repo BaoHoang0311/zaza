@@ -5,7 +5,47 @@
     ViewData["Title"] = "Multi Search";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    .page-item.active .page-link {
+        z-index: 3;
+        color: #fff;
+        background-color: #0dfddc;
+        border-color: #0dfddc;
+        display:flex;
+        justify-content:center;
+        align-content:center;
+    }
 
+    .page-item .page-link {
+        border-radius: 50%;
+        width:35px;
+        display: flex;
+        justify-content: center;
+        align-content: center;
+    }
+
+    .page-item:first-child .page-link {
+        border-radius: 50%;
+        width: 35px;
+        text-align:center;
+    }
+
+    .page-item:last-child .page-link {
+        border-radius: 50%;
+        width: 35px;
+        text-align: center;
+    }
+
+    .page-item.active .page-link {
+        color: black;
+    }
+    .page-item .page-link {
+        z-index: 3;
+        color: black;
+        background-color: white;
+        text-align: center;
+    }
+</style>
 <div>
     <form id="form" class="row g-3" method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -162,7 +202,7 @@
             });
         });
 
-         //Handle Export
+        //Handle Export
         $(document).on("click", "#handleExport", function () {
             let page = document.querySelector(".active").value;
             let data = {};

@@ -1,20 +1,20 @@
 ﻿using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using ngay8.Models;
 using Syncfusion.EJ2.FileManager.Base;
 using Syncfusion.EJ2.FileManager.PhysicalFileProvider;
-using System.Diagnostics;
 
 namespace ngay8.Controllers
 {
-    public class HomeController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class FileManagerController : ControllerBase
     {
         public PhysicalFileProvider operation;
         public string basePath;
         string root = "wwwroot\\Files";
 
-        public HomeController(IHostEnvironment hostingEnvironment)
+        public FileManagerController(IHostEnvironment hostingEnvironment)
         {
             this.basePath = hostingEnvironment.ContentRootPath;
             this.operation = new PhysicalFileProvider();
@@ -92,21 +92,5 @@ namespace ngay8.Controllers
             return this.operation.GetImage(args.Path, args.Id, false, null, null);
         }
 
-
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
     }
 }

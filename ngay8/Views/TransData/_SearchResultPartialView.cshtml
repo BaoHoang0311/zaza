@@ -30,13 +30,15 @@
         <div>
             @Html.PagedListPager(Model, page => Url.Content($"{page}"), new PagedListRenderOptions()
             {
-            ActiveLiElementClass = "active",
-            PageClasses = new[]{ "page-link"},
-            LiElementClasses=new[] { "page-item" },
-            UlElementClasses = new[] { "pagination","justify-content-center", "mt-3" },
-            LinkToNextPageFormat = "Next",
-            LinkToPreviousPageFormat = "Previous",
-            MaximumPageNumbersToDisplay = 5,
+                ActiveLiElementClass = "active",
+                PageClasses = new[]{ "page-link"},
+                LiElementClasses=new[] { "page-item me-1" },
+                UlElementClasses = new[] { "pagination","justify-content-center", "mt-3" },
+                LinkToNextPageFormat = ">",
+                LinkToPreviousPageFormat = "<",
+                LinkToLastPageFormat = "&#8811;",
+                LinkToFirstPageFormat = "&#8810;",
+                MaximumPageNumbersToDisplay = 5,
             })
         </div>
 

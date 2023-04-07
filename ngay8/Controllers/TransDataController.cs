@@ -1,21 +1,33 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using ngay8.Helper;
 using ngay8.ViewModels;
 using Service.Application.TransDataFeature.Queries;
-
+using Service.Domain.Models;
 namespace ngay8.Controllers
 {
     public class TransDataController : Controller
     {
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
-
-        public TransDataController(IMapper mapper, IMediator mediator)
+        private readonly IUriService _uriService;
+        private readonly AestrainingContext _context;
+        public TransDataController(IMapper mapper, IMediator mediator, IUriService uriService, AestrainingContext context)
         {
             _mapper = mapper;
             _mediator = mediator;
+            _uriService = uriService;
+            _context = context;
+        }
+        [HttpGet]
+        public async Task<IActionResult> TransGce(PaginationFilter paginationFilter)
+        {
+            var route = Request.Path.Value;
+            var res = await PagedResponse<TransactionGcedata>.CreatePagedReponse(_context.TransactionGcedatas.ToList(), _uriService, route, paginationFilter);
+            ViewBag.Data = JsonConvert.SerializeObject(res);
+            return View();
         }
         [HttpGet]
         public IActionResult Index()

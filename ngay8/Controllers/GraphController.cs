@@ -14,10 +14,14 @@ namespace ngay8.Controllers
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
-        public GraphController(IMapper mapper, IMediator mediator)
+        private readonly AestrainingContext _context;
+        private readonly IUriService _uriService;
+        public GraphController(IMapper mapper, IMediator mediator, AestrainingContext context, IUriService uriService)
         {
             _mediator = mediator;
             _mapper = mapper;
+            _context = context;
+            _uriService = uriService;
         }
         public IActionResult Index()
         {
@@ -83,6 +87,8 @@ namespace ngay8.Controllers
             if (dataCol == null || dataCol.Count() == 0) return Json(new { status = "fail" });
             return Json(new { status = "success", data = dataCol });
         }
+
+
         public IActionResult Report()
         {
             return View();
