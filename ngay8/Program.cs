@@ -18,6 +18,7 @@ namespace ngay8
             builder.Services.AddApplicationServices();
 
             builder.Services.AddHttpContextAccessor();
+
             builder.Services.AddSingleton<IUriService>(o =>
             {
                 var accessor = o.GetRequiredService<IHttpContextAccessor>();

@@ -1,0 +1,64 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<h1>zz</h1>
+
+<input type="text" id="subproduct" data-url="/AutoComplete/GetAuto" />
+
+@section Scripts {
+    <script>
+       
+        $(document).ready(function () {
+            // Set the Options for "Bloodhound" Engine
+            var my_Suggestion_class = new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.whitespace('name'),
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                remote: {
+                    wildcard: "%QUERY",
+                    url: '/AutoComplete/GetAuto?querytext=%QUERY',
+                    filter: function (results) {
+                        //console.log(results);
+                        return  $.map(results, function (item) {
+                            return {
+                                name: item.name,
+                                id : item.id,
+                            };
+                        });
+                    }
+                }
+            });
+
+
+            //Initialize the Suggestion Engine
+            var promise = my_Suggestion_class.initialize();
+            promise
+                .done(function () { console.log('ready to go!'); })
+                .fail(function () { console.log('err, something went wrong :('); });
+
+            var typeahead_elem = $('#subproduct');
+            typeahead_elem.typeahead({
+                hint: true,
+                highlight: true,
+                minLength: 1
+            },
+                {
+                    name: 'value',
+                    displayKey: 'name',
+                    source: my_Suggestion_class.ttAdapter(),
+                    templates: {
+                        empty: [
+                            '<div class="noitems">',
+                            'No Items Found',
+                            '</div>'
+                        ].join('\n')
+                    }
+                });
+        });
+
+
+
+
+    </script>
+}

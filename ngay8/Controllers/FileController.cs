@@ -6,15 +6,12 @@ using Syncfusion.EJ2.FileManager.PhysicalFileProvider;
 
 namespace ngay8.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class FileManagerController : ControllerBase
+    public class FileController : Controller
     {
         public PhysicalFileProvider operation;
         public string basePath;
         string root = "wwwroot\\Files";
-
-        public FileManagerController(IHostEnvironment hostingEnvironment)
+        public FileController(IHostEnvironment hostingEnvironment)
         {
             this.basePath = hostingEnvironment.ContentRootPath;
             this.operation = new PhysicalFileProvider();
@@ -86,11 +83,15 @@ namespace ngay8.Controllers
         }
 
         // gets the image(s) from the given path
-        [Route("GetImage")]
         public IActionResult GetImage(FileManagerDirectoryContent args)
         {
             return this.operation.GetImage(args.Path, args.Id, false, null, null);
         }
+        public IActionResult Index()
+        {
+            return View();
+        }
+
 
     }
 }

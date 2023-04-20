@@ -14,12 +14,14 @@ namespace ngay8.Controllers
         private readonly IMediator _mediator;
         private readonly IUriService _uriService;
         private readonly AestrainingContext _context;
-        public TransDataController(IMapper mapper, IMediator mediator, IUriService uriService, AestrainingContext context)
+        private readonly ILogger<TransDataController> _logger;
+        public TransDataController(IMapper mapper, IMediator mediator, IUriService uriService, AestrainingContext context, ILogger<TransDataController> logger)
         {
             _mapper = mapper;
             _mediator = mediator;
             _uriService = uriService;
             _context = context;
+            _logger = logger;
         }
         [HttpGet]
         public async Task<IActionResult> TransGce(PaginationFilter paginationFilter)
@@ -32,6 +34,8 @@ namespace ngay8.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            // terminal chọn cái project run là ra
+            _logger.LogWarning("hello");
             return View();
         }
         [HttpPost]
@@ -44,8 +48,8 @@ namespace ngay8.Controllers
                     op = search.op,
                     AgentName = search.AgentName,
                     AgentCEANO = search.AgentCEANO,
-                    From = search.From.Value + new TimeSpan(00, 00, 01),
-                    To = search.To.Value + new TimeSpan(23, 59, 59),
+                    From = search.From.Value,
+                    To = search.To.Value.AddDays(1),
                     Page = search.Page,
                     PageSize = search.PageSize.Value,
                 };

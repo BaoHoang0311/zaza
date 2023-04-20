@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["title"] = "FileManager";
+}
+<div id="filemanager"></div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            initFileManagerControl();
+
+        });
+        function initFileManagerControl() {
+            var hostUrl = location.protocol + '//' + location.host + "/";
+            var filemanagerInstance = new ej.filemanager.FileManager({
+                ajaxSettings: {
+                    url: hostUrl + 'File/FileOperations',
+                    getImageUrl: hostUrl + 'File/GetImage',
+                    uploadUrl: hostUrl + 'File/Upload',
+                    downloadUrl: hostUrl + 'File/Download'
+                },
+                beforeSend: function (args) {
+                    //console.log('beforesend',args);
+                },
+                fileSelect: function (args) {
+                    console.log(args);
+                },
+                menuClick: function (args) {
+                    console.log(args);
+                },
+                // File Manager's success event
+                success: function (args) {
+                }
+            });
+            // render initialized File Manager
+            filemanagerInstance.appendTo('#filemanager');
+        }
+    </script>
+
+
+}

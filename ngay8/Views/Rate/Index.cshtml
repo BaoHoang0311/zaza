@@ -1,0 +1,52 @@
+﻿
+<form>
+    <div id="rater"></div>
+    <input type="button" id="rating" value="click" />
+</form>
+
+<input id="test" value ="5"/>
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" id="abc">
+    Launch demo modal
+</button>
+<div id="showmodal">
+
+</div>
+
+
+
+@section Scripts{
+
+    <script>
+        $(document).ready(function () {
+            var starRating1 = raterJs({
+                starSize: 50,
+                element: document.querySelector("#rater"),
+                rateCallback: function rateCallback(ratting, done) {
+                    this.setRating(ratting);
+                    done();
+                }
+            });
+            $(document).on("click", "#abc", function () {
+                $.ajax({
+                    url: '/Rate/Moodal',
+                    method: "Get",
+                    success: function (result) {
+                        $("#showmodal").html('');
+                        $("#showmodal").html(result);
+                        $("#exampleModal").modal('show');
+
+                    },
+                    error: function (response) {
+
+                    },
+                });
+            });
+            $(document).on("click", "#efg", function () {
+                console.log($('#test').val());
+            });
+        });
+
+    </script>
+}

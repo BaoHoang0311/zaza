@@ -11,14 +11,14 @@
         color: #fff;
         background-color: #0dfddc;
         border-color: #0dfddc;
-        display:flex;
-        justify-content:center;
-        align-content:center;
+        display: flex;
+        justify-content: center;
+        align-content: center;
     }
 
     .page-item .page-link {
         border-radius: 50%;
-        width:35px;
+        width: 35px;
         display: flex;
         justify-content: center;
         align-content: center;
@@ -27,7 +27,7 @@
     .page-item:first-child .page-link {
         border-radius: 50%;
         width: 35px;
-        text-align:center;
+        text-align: center;
     }
 
     .page-item:last-child .page-link {
@@ -39,6 +39,7 @@
     .page-item.active .page-link {
         color: black;
     }
+
     .page-item .page-link {
         z-index: 3;
         color: black;
@@ -158,11 +159,31 @@
         $("#Search").click(function () {
             if ($("#form").valid()) {
                 var formData = $("#form").serializeArray();
+
+                var formData1 = new FormData();
+                formData1.append('File-Upload-0', files[0]);
+                formData1.append('FileName', files[0].name);
+                formData1.append('FileSize', (files[0].size / 1024));
+
+                // Mapping model
+                Object.keys(model).map(function (key) {
+
+                    formData1.append(key, model[key]);
+                });
+
+                console.log(formData1);
                 $.ajax({
                     url: '/TransData/Search',
                     method: "Post",
                     data: formData,
                     success: function (result) {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Your work has been saved',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
                         $('#partialViewContainer').empty();
                         $('#partialViewContainer').html(result);
                     },

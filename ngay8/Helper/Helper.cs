@@ -73,28 +73,6 @@ namespace ngay8.Helper
             return stream.ToArray();
         }
     }
-    //public static class PageHelper
-    //{
-    //public static PagedResponse<List<T>> CreatePagedReponse<T>(List<T> pagedData, PaginationFilter validFilter, int totalRecords, IUriService uriService, string route)
-    //{
-    //    var respose = new PagedResponse<List<T>>(pagedData, validFilter.PageNumber, validFilter.PageSize);
-    //    var totalPages = ((double)totalRecords / (double)validFilter.PageSize);
-    //    int roundedTotalPages = Convert.ToInt32(Math.Ceiling(totalPages));
-    //    respose.NextPage =
-    //        validFilter.PageNumber >= 1 && validFilter.PageNumber < roundedTotalPages
-    //        ? uriService.GetPageUri(new PaginationFilter(validFilter.PageNumber + 1, validFilter.PageSize), route)
-    //        : null;
-    //    respose.PreviousPage =
-    //        validFilter.PageNumber - 1 >= 1 && validFilter.PageNumber <= roundedTotalPages
-    //        ? uriService.GetPageUri(new PaginationFilter(validFilter.PageNumber - 1, validFilter.PageSize), route)
-    //        : null;
-    //    respose.FirstPage = uriService.GetPageUri(new PaginationFilter(1, validFilter.PageSize), route);
-    //    respose.LastPage = uriService.GetPageUri(new PaginationFilter(roundedTotalPages, validFilter.PageSize), route);
-    //    respose.TotalPages = roundedTotalPages;
-    //    respose.TotalRecords = totalRecords;
-    //    return respose;
-    //}
-    //}
     public class Response<T>
     {
         public Response(T data)
@@ -104,7 +82,7 @@ namespace ngay8.Helper
             Errors = null;
             Data = data;
         }
-        public T Data { get; set; }
+        public T Data { get; set; } // List
         public bool Succeeded { get; set; }
         public string[] Errors { get; set; }
         public string Message { get; set; }
@@ -121,20 +99,24 @@ namespace ngay8.Helper
         public Uri PreviousPage { get; set; }
         public PagedResponse(T data, int pageNumber, int pageSize) : base(data)
         {
-            this.PageNumber =
+            this.PageNumber = pageNumber;
             this.PageSize = pageSize;
+
             this.Data = data;
-            this.Message = null;
             this.Succeeded = true;
             this.Errors = null;
+            this.Message = null;
         }
         public static async Task<PagedResponse<List<T>>> CreatePagedReponse(List<T> pagedData, IUriService uriService, string route, PaginationFilter validFilter = null)
         {
             var TotalRecords = pagedData.Count();
+
             var TotalPages = (int)((double)TotalRecords / (double)validFilter.PageSize);
+
             var respose = new PagedResponse<List<T>>(pagedData, validFilter.PageNumber, validFilter.PageSize);
 
             validFilter = new PaginationFilter(validFilter.PageNumber, validFilter.PageSize);
+
 
             validFilter.PageNumber = validFilter.PageNumber > TotalPages ? TotalPages : (validFilter.PageNumber < 1) ? 1 : validFilter.PageNumber;
 
@@ -156,7 +138,7 @@ namespace ngay8.Helper
             respose.LastPage = uriService.GetPageUri(new PaginationFilter(respose.TotalPages, validFilter.PageSize), route);
 
             respose.Data = pagedData.Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
-                            .Take(validFilter.PageSize).ToList();
+                                    .Take(validFilter.PageSize).ToList();
 
             return respose;
         }
@@ -188,10 +170,10 @@ namespace ngay8.Helper
         }
         public Uri GetPageUri(PaginationFilter filter, string route)
         {
-            // localhost:44312/api/customer
+            // _baseUri: localhost:44312  route : /TransData/TransGCE
             var _enpointUri = new Uri(string.Concat(_baseUri, route));
             var modifiedUri = QueryHelpers.AddQueryString(_enpointUri.ToString(), "pageNumber", filter.PageNumber.ToString());
-            // localhost:44312/api/customer?pageNumber=1&pageSize=10
+            // localhost:44312/TransData/TransGCE?pageNumber=1&pageSize=10
             modifiedUri = QueryHelpers.AddQueryString(modifiedUri, "pageSize", filter.PageSize.ToString());
             return new Uri(modifiedUri);
         }
