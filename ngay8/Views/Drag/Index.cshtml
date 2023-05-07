@@ -1,0 +1,26 @@
+﻿
+<button id="btnSearch" type="button" class="btn btn-outline-primary"><i class="fa fa-search"></i>&nbsp; Submit</button>
+<button id="btnGet" type="button" class="btn btn-outline-primary"><i class="fa fa-search"></i>&nbsp; GET</button>
+
+<div id ="abc"></div>
+
+
+<script>
+    $(document).on("click", "#btnSearch", function () {
+        $.ajax({
+            url: '/Drag/TestText',
+            method: "Post",
+            success: function (result) {
+                $('#abc').empty();
+                $('#abc').html(result);
+            },
+            error: function (response) {
+            },
+        });
+    });
+    $(document).on("click", "#btnGet", function () {
+        var itemA = grid.getItem(0);
+        console.log(itemA);
+        console.log(itemA._sortData.id);
+    });
+</script>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Service.Domain.Models;
+using ngay8.Data;
 namespace ngay8.Controllers
 {
     public class AutoCompleteController : Controller
@@ -13,11 +14,7 @@ namespace ngay8.Controllers
         {
             return View();
         }
-        public class CountryJson
-        {
-            public int id { get; set; }
-            public string name { get; set; }
-        }
+
         public IActionResult GetAuto(string querytext)
         {
             var country_list = new List<CountryJson>() {

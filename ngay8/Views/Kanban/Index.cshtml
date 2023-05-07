@@ -1,0 +1,21 @@
+﻿
+
+<button id="btnSearch" class="btn btn-primary">Click to load Kanban data</button>
+
+<div id="abcKanban"></div>
+
+
+<script>
+    $(document).on("click", "#btnSearch", function () {
+        $.ajax({
+            url: '/Kanban/PartialModal',
+            method: "Get",
+            success: function (result) {
+                $('#abcKanban').empty();
+                $('#abcKanban').html(result);
+            },
+        });
+    });
+</script>
+
+

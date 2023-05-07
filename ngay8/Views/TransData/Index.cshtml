@@ -159,19 +159,6 @@
         $("#Search").click(function () {
             if ($("#form").valid()) {
                 var formData = $("#form").serializeArray();
-
-                var formData1 = new FormData();
-                formData1.append('File-Upload-0', files[0]);
-                formData1.append('FileName', files[0].name);
-                formData1.append('FileSize', (files[0].size / 1024));
-
-                // Mapping model
-                Object.keys(model).map(function (key) {
-
-                    formData1.append(key, model[key]);
-                });
-
-                console.log(formData1);
                 $.ajax({
                     url: '/TransData/Search',
                     method: "Post",

@@ -1,0 +1,209 @@
+﻿
+<div class="col-lg-3 property-section" style="margin-top:20px;">
+    <table id="property" title="Properties">
+        <tr>
+            <td>
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" id="btnAdd" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Add
+                </button>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- Modal Add-->
+<div class="modal fade" id="exampleModal" style="margin-top:100px;">
+    <div id="abcde"></div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-res">
+                <!--Render Partial View-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="SaveAddKanBan">Save changes</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div id="container" style="margin-top:100px;">
+    <div class="content-wrapper">
+        <div id="Kanban"></div>
+    </div>
+</div>
+
+<!--Render Template-->
+<script id="cardTemplate" type="text/x-jsrender">
+    <div class='e-card-content'>
+        <table class="card-template-wrap">
+            <tbody>
+                <tr>
+                    <td class="CardHeader">Id:</td>
+                    <td>${id}</td>
+                </tr>
+                <tr>
+                    <td class="CardHeader">Type:</td>
+                    <td>${type}</td>
+                </tr>
+                <tr>
+                    <td class="CardHeader">Assignee:</td>
+                    <td>${assignee}</td>
+                </tr>
+                <tr>
+                    <td class="CardHeader">Summary:</td>
+                    <td>${summary}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</script>
+
+<script>
+    var kanbanObj = new ej.kanban.Kanban({
+        keyField: 'status',
+        columns: [
+            { headerText: 'Backlog', keyField: 'Open' },
+            { headerText: 'In Progress', keyField: 'InProgress' },
+            { headerText: 'Testing', keyField: 'Testing' },
+            { headerText: 'Done', keyField: 'Close' }
+        ],
+        cardSettings: {
+            contentField: 'summary',
+            headerField: 'id',
+            template: '#cardTemplate'
+        },
+        swimlaneSettings: {
+            keyField: 'assignee',
+        },
+        dialogOpen: function (args) {
+            console.log('dialogOpen',args);
+            if (args.requestType !== 'Delete') {
+                var curData = args.data;
+                var filledTextBox = new ej.inputs.TextBox({});
+                filledTextBox.appendTo(args.element.querySelector('#Id'));
+
+                var statusDropObj = new ej.dropdowns.DropDownList({
+                    value: curData.Status, popupHeight: '300px',
+                    fields: { text: 'Status', value: 'Status' }, placeholder: 'Status'
+                });
+                statusDropObj.appendTo(args.element.querySelector('#Status'));
+
+                var textareaObj = new ej.inputs.TextBox({
+                    placeholder: 'Summary',
+                    multiline: true
+                });
+                textareaObj.appendTo(args.element.querySelector('#Summary'));
+            }
+        },
+        actionComplete: function (args) {
+            console.log('actionComplete',args);
+            if (args.requestType === 'cardChanged'){
+                let dulieu = {
+                    Id: args.changedRecords[0].id,
+                    Status: args.changedRecords[0].status,
+                    Summary: args.changedRecords[0].summary,
+                    Assignee: args.changedRecords[0].assignee,
+                }
+                SaveWhenDrag(dulieu);
+            }
+            if (args.requestType === 'cardRemoved') {
+
+                let id = parseInt(args.deletedRecords[0].id);
+                Delete(id);
+            }
+        }
+    });
+    kanbanObj.appendTo('#Kanban');
+
+    // Get Data Json + Show Modal ko cần lấy data
+    $(document).ready(function () {
+        var ajax = new ej.base.Ajax("/KanBan/GetData", "GET");
+        ajax.send();
+        ajax.onSuccess = function (data) {
+            kanbanObj.dataSource = JSON.parse(data);
+        };
+    });
+
+    // Custom Edit khi Edit with Modal
+    $(document).on('click', '.e-dialog-edit', function () {
+        var dulieu = $('#KanbanEditForm').serializeObject();
+        dulieu.id = $("input[name=id]").val();
+        $.ajax({
+            url: '/Kanban/Update',
+            method: "Post",
+            data: dulieu,
+            success: function (result) {
+                $('.e-dialog-cancel').click();
+                LoadDataKanban();
+            },
+        });
+    })
+
+    //Edit khi drag n drop
+    function SaveWhenDrag(dulieu) {
+        $.ajax({
+            url: '/Kanban/Update',
+            method: "Post",
+            data: dulieu, // { 'Id': args.changedRecords[0].id ,'Summary' :args.changedRecords[0].summary }
+            success: function (result) {
+
+            },
+        });
+    }
+
+    // Khi click xóa ở Modal
+    function Delete(Id) {
+        $.ajax({
+            url: '/Kanban/Delete',
+            method: "Post",
+            data: { 'Id': Id }, 
+            success: function (result) {
+
+            },
+        });
+    }
+
+    // Show Add Modal
+    $(document).on('click', '#btnAdd', function (e) {
+        $.ajax({
+            url: '/Kanban/InitAddData',
+            method: "Post",
+            success: function (result) {
+                $('#modal-res').html(result);
+                $('#exampleModal').modal('show');
+            },
+        });
+
+    })
+
+    // click Save in Add Modal
+    $(document).on('click', '#SaveAddKanBan', function (e) {
+        var dulieu = $('#AddKanban').serializeObject();
+        $.ajax({
+            url: '/Kanban/Insert',
+            data: dulieu,
+            method: "Post",
+            success: function (result) {
+                $('#exampleModal').modal('hide');
+                LoadDataKanban();
+            },
+        });
+    })
+    function LoadDataKanban() {
+        $.ajax({
+            url: '/Kanban/PartialModal',
+            method: "Get",
+            success: function (result) {
+                $('#abcKanban').empty();
+                $('#abcKanban').html(result);
+            },
+        });
+    }
+</script>

@@ -1,0 +1,94 @@
+﻿@using ngay8.Data
+@model List<CountryJson>
+<style>
+    .actions {
+        margin: 5px;
+    }
+
+    .gridaa {
+        position: relative;
+    }
+
+    .item {
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        line-height: 200px;
+        margin: 5px;
+        z-index: 1;
+    }
+
+        .item.muuri-item-hidden {
+            z-index: 0;
+        }
+
+        .item.muuri-item-releasing {
+            z-index: 2;
+        }
+
+        .item.muuri-item-dragging {
+            z-index: 3;
+        }
+
+    .item-content {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        background: yellow;
+        font-size: 50px;
+        color: white;
+        cursor: pointer;
+    }
+
+    .item.muuri-item-dragging .item-content {
+        background: blue;
+    }
+
+    .item.muuri-item-releasing .item-content {
+        background: blueViolet;
+    }
+</style>
+<div class="actions">
+    <button class="sort-asc">Sort (ascending)</button>
+    <button class="sort-desc">Sort (descending)</button>
+</div>
+<div class="gridaa">
+
+    @foreach (var item in Model)
+    {
+        <div class="item">
+            <div class="item-content" data-id="@item.id">@item.name</div>
+        </div>
+
+    }
+</div>
+
+<script>
+    var grid = new Muuri('.gridaa', {
+        dragEnabled: true,
+        layoutOnInit: false,
+        showEasing: 'cubic-bezier(0.215, 0.61, 0.355, 1)',
+        sortData: {
+            id: function (item, element) {
+                return parseFloat(element.children[0].getAttribute('data-id'));
+            }
+        }
+
+    });
+    var sortAsc = document.querySelector('.sort-asc');
+    var sortDesc = document.querySelector('.sort-desc');
+
+    // Sort the items before the initial layout
+    // and do the initial layout
+    grid.sort('id:desc', { layout: 'instant' })
+
+    // Bind the button event listeners
+    sortAsc.addEventListener('click', function () {
+        grid.sort('id');
+    });
+    sortDesc.addEventListener('click', function () {
+        grid.sort('id:desc');
+    });
+</script>
+

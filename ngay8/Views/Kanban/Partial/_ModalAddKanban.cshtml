@@ -1,0 +1,22 @@
+﻿@model AddKanban
+
+<form id="AddKanban">
+    <div class="mb-3">
+        <label class="form-label" for="formrow-firstname-input">Summary</label>
+        <textarea type="text" name="Summary" id="Summary" class="form-control"></textarea>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label class="form-label" for="formrow-email-input">Status</label>
+                @Html.DropDownList("Status", (Model.Status != null ? new SelectList(Model.Status as IEnumerable<SelectListItem>, "Value", "Text") : Enumerable.Empty<SelectListItem>()),  htmlAttributes: new { @class = "form-control"})
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label class="form-label" for="formrow-password-input">Assignee</label>
+                @Html.DropDownList("Assignee", (Model.Assignee != null ? new SelectList(Model.Assignee as IEnumerable<SelectListItem>, "Value", "Text") : Enumerable.Empty<SelectListItem>()),  htmlAttributes: new { @class = "form-control"})
+            </div>
+        </div>
+    </div>
+</form>
