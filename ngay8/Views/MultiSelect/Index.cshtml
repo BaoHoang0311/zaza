@@ -59,6 +59,7 @@
     <button id="btnSearch" type="button" class="btn btn-outline-primary"><i class="fa fa-search"></i>&nbsp; Search</button>
 </form>
 
+@*https://springstubbe.us/projects/jquery-multiselect/*@
 
 <script>
     $(function () {
@@ -75,13 +76,26 @@
 
     $(function () {
         $('select[multiple]#accountid').multiselect({
-            columns: 2,
+            columns: 1,
             placeholder: 'Select Country',
             search: true,
             searchOptions: {
                 'default': 'Search States'
             },
-            selectAll: true
+            selectAll: true,
+            onOptionClick: function (element, option) {
+                var thisOpt = $(option);
+
+                var c = $(element).next('.ms-options-wrap').find('ul');
+                var d = $(element).next('.ms-options-wrap').find('li');
+
+                for (let i = 0; i < d.length; i++) {
+                    if (d[i].classList.contains('selected')) {
+                        console.log("haha");
+                        c[0].prepend(d[i]);
+                    }
+                }
+            }
         });
     });
 
