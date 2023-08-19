@@ -1,0 +1,87 @@
+﻿<style>
+    #gridDemo {
+        /* height given for illustration */
+        display: flex;
+        flex-flow: row wrap;
+        position: relative;
+    }
+
+    .items {
+        width: 200px;
+        height: 150px;
+        margin: 4px;
+        flex: 0 1 1;
+        border: 1px solid red;
+    }
+
+    img {
+        width: 200px;
+        height: 150px;
+    }
+</style>
+
+<link rel="stylesheet"
+      href="@Html.Raw("https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css")" />
+
+<div id="gridDemo" class="col">
+    <div class="items">
+        <a href="https://lipsum.app/id/1/1024x768" data-fancybox="gallery">
+            <img src="https://lipsum.app/id/1/200x150" />
+        </a>
+    </div>
+    <div class="items">
+        <a href="https://lipsum.app/id/6/1024x768" data-fancybox="gallery">
+            <img src="https://lipsum.app/id/6/200x150" />
+        </a>
+    </div>
+    <div class="items">
+        <a href="https://lipsum.app/id/5/1024x768" data-fancybox="gallery">
+            <img src="https://lipsum.app/id/5/200x150" />
+        </a>
+    </div>
+    <div class="items">
+        <a href="https://lipsum.app/id/1/1024x768" data-fancybox="gallery">
+            <img src="https://lipsum.app/id/1/200x150" />
+        </a>
+    </div>
+    <div class="items">
+        <a href="https://images.unsplash.com/photo-1684717417861-9c90fc3a8840?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=464&q=80" data-fancybox="gallery">
+            <img src="https://images.unsplash.com/photo-1684717417861-9c90fc3a8840?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=464&q=80" />
+        </a>
+    </div>
+    <div class="items">Item 6</div>
+    <div class="items">Item 7</div>
+    <div class="items">Item 8</div>
+    <div class="items">Item 9</div>
+    <div class="items">Item 10</div>
+    <div class="items">Item 11</div>
+    <div class="items">Item 12</div>
+    <div class="items">Item 13</div>
+    <div class="items">Item 14</div>
+    <div class="items">Item 15</div>
+    <div class="items">Item 16</div>
+    <div class="items">Item 17</div>
+    <div class="items">Item 18</div>
+    <div class="items">Item 19</div>
+    <div class="items">Item 20</div>
+</div>
+
+<script src="@Html.Raw("https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js")"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+@*https://sortablejs.github.io/Sortable/#comparisons*@
+<script>
+    Fancybox.bind('[data-fancybox]', {
+        caption: (fancybox, slide) => {
+            const caption = slide.caption || "fegergergergergr";
+
+            return `${slide.index + 1} / ${fancybox.carousel?.slides.length
+                } <br /> ${caption}`;
+        },
+    });
+    Sortable.create(gridDemo, {
+        animation: 150
+    });
+
+</script>
+
+

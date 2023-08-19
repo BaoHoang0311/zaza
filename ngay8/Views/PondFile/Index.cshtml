@@ -1,0 +1,61 @@
+﻿@using ngay8.ViewModels
+@model Product
+<h1>Pond File</h1>
+
+
+
+<form id="uploadform" enctype="multipart/form-data">
+    <input type="text" asp-for="Name" />
+    <input type="file" class="filepond" asp-for="photos" data-max-file-size="20MB" data-max-files="3" multiple>
+    <button type="submit" class="uploadbtn">Upload Document</button>
+</form>
+
+
+<script>
+
+    /*
+    We want to preview images, so we need to register the Image Preview plugin
+    */
+    FilePond.registerPlugin(
+
+        // encodes the file as base64 data
+        FilePondPluginFileEncode,
+
+        // validates the size of the file
+        FilePondPluginFileValidateSize,
+
+        // corrects mobile image orientation
+        FilePondPluginImageExifOrientation,
+
+        // previews dropped images
+        FilePondPluginImagePreview
+    );
+
+    // Select the file input and use create() to turn it into a pond
+    // Get a file input reference
+    const inputElement = document.querySelector('.filepond');
+    const pond = FilePond.create(inputElement);
+    pond.setOptions({
+        allowDrop: true,
+        allowReplace: true,
+        instantUpload: false,
+    });
+    $("#uploadform").submit(function (e) {
+        e.preventDefault();
+        var formdata = new FormData(this);
+        // append FilePond files into the form data
+        pondFiles = pond.getFiles();
+        for (var i = 0; i < pondFiles.length; i++) {
+            // append the blob file
+            formdata.append('photos', pondFiles[i].file);
+        }
+
+        $.ajax({
+            url: "/PondFile/Index",
+            data: formdata,
+            processData: false,
+            contentType: false,
+            method: "post"
+        });
+    });
+</script>
