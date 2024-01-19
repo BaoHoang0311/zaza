@@ -48,7 +48,7 @@ namespace ngay8
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Kanban}/{action=Index}/{id?}");
+                pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
         }

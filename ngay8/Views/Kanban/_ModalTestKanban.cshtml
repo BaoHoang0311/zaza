@@ -86,6 +86,7 @@
             console.log('dialogOpen',args);
             if (args.requestType !== 'Delete') {
                 var curData = args.data;
+
                 var filledTextBox = new ej.inputs.TextBox({});
                 filledTextBox.appendTo(args.element.querySelector('#Id'));
 
@@ -114,9 +115,9 @@
                 SaveWhenDrag(dulieu);
             }
             if (args.requestType === 'cardRemoved') {
-
-                let id = parseInt(args.deletedRecords[0].id);
-                Delete(id);
+                console.log("hihi")
+                // let id = parseInt(args.deletedRecords[0].id);
+                // Delete(id);
             }
         }
     });
@@ -196,6 +197,7 @@
             },
         });
     })
+
     function LoadDataKanban() {
         $.ajax({
             url: '/Kanban/PartialModal',

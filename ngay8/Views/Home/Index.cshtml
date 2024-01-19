@@ -1,7 +1,136 @@
-﻿@{
+﻿@model GraphData
+@{
     ViewData["title"] = "Home";
 }
-<h1>Home</h1>
+<button id="SavePost">Save Post</button>
+<button id="DownPost">Down Post</button>
+<a href="/Home/DownPost1">Down post 1</a>
+<input type="text" value="abc"/>
+<form id="frmPost">
+    <textarea asp-for="Content" class="form-control"></textarea>
+</form>
+<h1 class="bg-red-600">hello</h1>
+<script>
+    $(document).ready(function () {
+        $('#Content').summernote({
+            placeholder: 'Hello Bootstrap 5',
+            tabsize: 2,
+            height: 1000,
+            callbacks: {
+                onImageUpload: function (files) {
+                    console.log(files);
+                    SaveImg(files);
+                }
+            }
+        });
+    });
+
+    $(document).on('click', '#SavePost', function () {
+        var data = $('#frmPost').serializeObject();
+        $.ajax({
+            type: "Post",
+            url: '@Url.Action("SubmitForm", "Home")',
+            data: data,
+            success: function (result) {
+                console.log(result);
+            },
+        });
+    });
+
+    function SaveImg(files) {
+        var formData = new FormData();
+
+        formData = obj2FormData({
+            Month: '5',
+            Year: '6',
+            grap: {
+                Name: 'Eylul',
+                Id: 'Tuncel',
+            },
+            Str: ['red', 'yellow']
+        });
+
+
+        formData.append('file', files[0]);
+
+        $.ajax({
+            type: "Post",
+            contentType: 'multipart/form-data',
+            cache: false,
+            url: '@Url.Action("SaveImg", "Home")',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                debugger
+                console.log(result);
+                var zz = `<img src="${result.link}" style = " width:30%;">`;
+                $('#Content').summernote('code', zz);
+
+            },
+        });
+    }
+
+    $(document).on('click', '#DownPost', function () {
+        var data = $('#frmPost').serializeObject();
 
 
 
+        $.ajax({
+            type: "Post",
+            url: '@Url.Action("DownPost1", "Home")',
+            data: data,
+            success: function (result) {
+                console.log(result);
+                const uint8Array = base64ToUint8Array(result.bytes.fileContents);
+                const blob = new Blob([uint8Array], { type: result.bytes.contentType });
+                const downloadUrl = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = downloadUrl;
+                a.download = result.bytes.fileDownloadName; // LoadBalancer_Part1.docx
+                document.body.appendChild(a);
+                a.click();
+            },
+        });
+    });
+
+    function base64ToUint8Array(base64) {
+        // decode base64 string, remove space for IE compatibility
+        var binary = atob(base64.replace(/\s/g, ''));
+        var len = binary.length;
+        var buffer = new ArrayBuffer(len);
+        var view = new Uint8Array(buffer);
+        for (var i = 0; i < len; i++) {
+            view[i] = binary.charCodeAt(i);
+        }
+        return view;
+    }
+
+    function obj2FormData(obj, formData = new FormData()) {
+
+        this.formData = formData;
+
+        this.createFormData = function (obj, subKeyStr = '') {
+            for (let i in obj) {
+                let value = obj[i];
+                let subKeyStrTrans = subKeyStr ? subKeyStr + '[' + i + ']' : i;
+
+                if (typeof (value) === 'string' || typeof (value) === 'number') {
+
+                    this.formData.append(subKeyStrTrans, value);
+
+                } else if (typeof (value) === 'object') {
+
+                    this.createFormData(value, subKeyStrTrans);
+
+                }
+            }
+        }
+
+        this.createFormData(obj);
+
+        return this.formData;
+    }
+
+
+</script>
