@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using ngay8.Models;
 using System.Diagnostics;
 using ngay8.Data;
-using static ngay8.Controllers.AutoCompleteController;
 
 namespace ngay8.Controllers
 {

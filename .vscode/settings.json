@@ -1,0 +1,9 @@
+{
+    "workbench.editor.wrapTabs": true,
+    "workbench.colorCustomizations": {
+        "tab.activeBorder": "#ff0000",
+        "tab.unfocusedActiveBorder": "#000000"
+    },
+    "workbench.editor.pinnedTabsOnSeparateRow": true,
+    "editor.fontSize": 14,
+}
